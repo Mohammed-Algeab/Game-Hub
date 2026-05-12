@@ -683,7 +683,7 @@ class ProfileUI {
         // إزالة أي مودال سابق
         document.getElementById('gh-edit-name-modal')?.remove();
 
-        const profile = GameHubAPI.profile.getProfile();
+        const profile = GameHubAPI.profile.get();
         const currentName = profile?.display_name || profile?.username || '';
 
         const modal = document.createElement('div');
@@ -760,7 +760,7 @@ class ProfileUI {
             saveBtn.disabled = true;
             saveBtn.innerHTML = '<span class="gh-icon gh-icon-xs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h14M5 21h14M7 3v5l5 4-5 4v5m10-18v5l-5 4 5 4v5"/></svg></span> جارٍ الحفظ…';
 
-            const { error } = await GameHubAPI.profile.updateProfile({ display_name: newName });
+            const { error } = await GameHubAPI.profile.update({ display_name: newName });
 
             if (error) {
                 errorEl.textContent = '⚠ حدث خطأ، حاول مجدداً';

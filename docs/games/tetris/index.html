@@ -187,7 +187,7 @@
                 this.gameFoundation.hideGameOver();
                 this.gameFoundation.setScore(0);
                 this.gameFoundation.setLevel(1);
-                this.gameFoundation._updatePauseBtn();
+                this.gameFoundation.resetPauseBtn();
                 document.getElementById('game-overlay')?.classList.add('hidden');
                 this.controls.destroy();
                 this.logic.reset();

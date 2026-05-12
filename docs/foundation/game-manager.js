@@ -14,17 +14,18 @@ class GameManager {
 
     /**
      * تهيئة لعبة جديدة.
+     * إن كانت هناك لعبة نشطة يتم تنظيفها تلقائياً (مؤقتات + listeners + جلسة).
      * @param {object} gameConfig - إعدادات اللعبة (مثل الاسم، مفتاح التخزين، الـ callbacks).
      * @returns {GameFoundation} - نسخة من GameFoundation للعبة الحالية.
      */
     initGame(gameConfig) {
         if (this.gameFoundationInstance) {
-            console.warn('لعبة سابقة لا تزال نشطة. يرجى التأكد من إنهاء اللعبة قبل بدء لعبة جديدة.');
-            // يمكن إضافة منطق لإنهاء اللعبة السابقة هنا إذا لزم الأمر.
+            // تنظيف النسخة السابقة تلقائياً (مؤقتات + listeners + جلسة نشطة)
+            this.gameFoundationInstance.destroy();
         }
         this.gameFoundationInstance = new GameFoundation(gameConfig);
-        this.currentGame = gameConfig.name; // تخزين اسم اللعبة الحالية
-        console.log(`تم تهيئة اللعبة: ${this.currentGame}`);
+        this.currentGame = gameConfig.name;
+        console.log(`[GameManager] تم تهيئة اللعبة: ${this.currentGame}`);
         return this.gameFoundationInstance;
     }
 
@@ -37,21 +38,16 @@ class GameManager {
     }
 
     /**
-     * إنهاء اللعبة الحالية.
+     * إنهاء اللعبة الحالية وتنظيف كامل.
      */
     endGame() {
         if (this.gameFoundationInstance) {
-            this.gameFoundationInstance.clearState(); // مسح حالة اللعبة المحفوظة
+            this.gameFoundationInstance.destroy();
             this.gameFoundationInstance = null;
             this.currentGame = null;
-            console.log('تم إنهاء اللعبة الحالية.');
+            console.log('[GameManager] تم إنهاء اللعبة الحالية.');
         }
     }
-
-    // يمكن إضافة المزيد من الوظائف هنا لإدارة الألعاب، مثل:
-    // - تحميل الأصول المشتركة
-    // - إدارة الأحداث العامة
-    // - التفاعل مع واجهة المستخدم العامة لـ Game Hub
 }
 
 export const gameManager = new GameManager();

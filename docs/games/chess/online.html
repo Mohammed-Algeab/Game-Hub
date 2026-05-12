@@ -389,7 +389,7 @@ document.getElementById('btn-decline-draw').addEventListener('click', () => {
 
 // ── نظام الدردشة العائم (AI + Global + Private) ─────────────────────────────
 import { initChat } from '../../js/chat.js';
-import { initGameHub } from '../../foundation/gamehub-api.js';
+import { initGameHub, GameHubAPI } from '../../foundation/gamehub-api.js';
 import { profileUI } from '../../foundation/profile-ui.js';
 
 await initGameHub();

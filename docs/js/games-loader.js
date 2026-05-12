@@ -17,6 +17,9 @@ import { Icons } from './icons.js';
 
 const MANIFEST_URL = 'games/manifest.json';
 
+// ─── كشف الجهاز ──────────────────────────────────────────────────────────────
+const IS_MOBILE = window.matchMedia('(pointer: coarse)').matches;
+
 // ─── تحميل بيانات الألعاب ────────────────────────────────────────────────────
 
 async function fetchManifest() {
@@ -61,8 +64,10 @@ function buildCard(game) {
     const isSoon = game.status !== 'available';
     const isBeta = game.status === 'beta';
 
-    const badge = isBeta ? '<span class="game-badge beta">تجريبي</span>'
-                : isSoon ? '<span class="game-badge soon">قريباً</span>'
+    const isDesktopOnly = !game.mobile;
+    const badge = isBeta        ? '<span class="game-badge beta">تجريبي</span>'
+                : isSoon        ? '<span class="game-badge soon">قريباً</span>'
+                : isDesktopOnly ? '<span class="game-badge desktop-only">🖥 كمبيوتر</span>'
                 : '';
 
     const tags = (game.tags ?? [])
@@ -178,8 +183,10 @@ function filterGames(category, activeBtn) {
     const infoEl  = document.getElementById('filter-info');
 
     cards.forEach(card => {
-        const match = category === 'all' || card.dataset.category === category;
-        card.style.display = match ? '' : 'none';
+        const categoryMatch = category === 'all' || card.dataset.category === category;
+        // على الموبايل: أخفِ الألعاب التي mobile="false"
+        const deviceMatch   = !IS_MOBILE || card.dataset.mobile !== 'false';
+        card.style.display  = (categoryMatch && deviceMatch) ? '' : 'none';
     });
 
     document.querySelectorAll('.cat-filter-btn').forEach(b => b.classList.remove('active'));
@@ -214,9 +221,19 @@ export async function initGamesGrid() {
     try {
         const games = await loadAllGames();
 
+        // على الموبايل: نحسب الإحصائيات بعد استثناء ألعاب الكمبيوتر
+        const visibleGames = IS_MOBILE ? games.filter(g => g.mobile !== false) : games;
+
         grid.innerHTML = games.map(buildCard).join('');
-        updateStats(games);
-        buildCategories(games);
+        updateStats(visibleGames);
+        buildCategories(visibleGames);
+
+        // طبّق فلتر الجهاز على الفور
+        if (IS_MOBILE) {
+            document.querySelectorAll('#games-grid .game-card').forEach(card => {
+                if (card.dataset.mobile === 'false') card.style.display = 'none';
+            });
+        }
 
     } catch (err) {
         console.error('خطأ في تحميل الألعاب:', err);

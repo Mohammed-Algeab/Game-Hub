@@ -308,6 +308,30 @@ class ProfileUI {
             this._updateContent();
             this._updateHeaderButton(null);
         });
+
+        // ─── زر نسخ المعرّف ───────────────────────────────────────────────
+        const copyBtn = this.contentEl.querySelector('.gh-user-id-copy');
+        if (copyBtn) {
+            const COPY_SVG = `<span class="gh-icon gh-icon-xs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></span>`;
+            const CHECK_SVG = `<span class="gh-icon gh-icon-xs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>`;
+            copyBtn.addEventListener('click', () => {
+                const fullId = copyBtn.dataset.userid || '';
+                navigator.clipboard.writeText(fullId).then(() => {
+                    copyBtn.innerHTML = CHECK_SVG;
+                    setTimeout(() => { copyBtn.innerHTML = COPY_SVG; }, 1500);
+                }).catch(() => {
+                    // fallback للمتصفحات القديمة
+                    const el = document.createElement('textarea');
+                    el.value = fullId;
+                    document.body.appendChild(el);
+                    el.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(el);
+                    copyBtn.innerHTML = CHECK_SVG;
+                    setTimeout(() => { copyBtn.innerHTML = COPY_SVG; }, 1500);
+                });
+            });
+        }
     }
 
     // ─── ربط فلاتر الإنجازات ──────────────────────────────────────────────
@@ -389,13 +413,7 @@ class ProfileUI {
                     <span class="gh-user-id-label"><span class="gh-icon gh-icon-xs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3"/><line x1="6" y1="12" x2="10" y2="12"/><circle cx="16" cy="11" r="2"/><path d="M12 17h8"/></svg></span> معرّفك (للدردشة الخاصة)</span>
                     <div class="gh-user-id-row">
                         <code class="gh-user-id-value" id="gh-user-id-code">${(profile.id || authManager.getUserId() || '—').slice(0, 18)}…</code>
-                        <button class="gh-user-id-copy" title="نسخ المعرّف الكامل" onclick="
-                            const fullId = '${profile.id || authManager.getUserId() || ''}';
-                            navigator.clipboard.writeText(fullId).then(() => {
-                                this.innerHTML = '<span class="gh-icon gh-icon-xs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>';
-                                setTimeout(() => this.innerHTML = '<span class="gh-icon gh-icon-xs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></span>', 1500);
-                            });
-                        "><span class="gh-icon gh-icon-xs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></span></button>
+                        <button class="gh-user-id-copy" title="نسخ المعرّف الكامل" data-userid="${profile.id || authManager.getUserId() || ''}"><span class="gh-icon gh-icon-xs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></span></button>
                     </div>
                 </div>` : ''}
 

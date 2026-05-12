@@ -362,3 +362,35 @@
         max-width: calc(100vw - 120px);
     }
 }
+
+/* ── زر حذف الرسائل ── */
+.chat-delete-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted, #94a3b8);
+    padding: 2px 4px;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.15s, color 0.15s, background 0.15s;
+    vertical-align: middle;
+    margin-inline-start: 4px;
+}
+
+.message-time:hover .chat-delete-btn,
+.chat-message:hover .chat-delete-btn {
+    opacity: 1;
+}
+
+.chat-delete-btn:hover {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.12);
+}
+
+.chat-delete-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}

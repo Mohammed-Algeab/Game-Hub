@@ -116,19 +116,66 @@ class ChatGlobalManager {
 
     _subscribe() {
         if (!this.supabase) return;
-        this.channel = this.supabase
-            .channel('global-chat')
-            .on('postgres_changes', {
-                event: 'INSERT',
-                schema: 'public',
-                table: 'chat_messages'
-            }, async (payload) => {
-                // نعيد تحميل الرسائل لأن الـ realtime payload لا يحتوي بيانات البروفايل
-                await this.loadRecentMessages();
-            })
-            .subscribe((status) => {
-                console.log('[ChatGlobal] Realtime status:', status);
-            });
+        // Polling بدلاً من Realtime (لا يحتاج خطة مدفوعة)
+        this._lastPollAt = new Date().toISOString();
+        this._pollInterval = setInterval(async () => {
+            await this._pollNewMessages();
+        }, 3000);
+        console.log('[ChatGlobal] Polling started (every 3s)');
+    }
+
+    async _pollNewMessages() {
+        if (!this.supabase) return;
+        const { data, error } = await this.supabase
+            .from('chat_messages')
+            .select(`
+                id,
+                user_id,
+                message,
+                created_at,
+                profiles:user_id (
+                    username,
+                    display_name,
+                    avatar_url,
+                    gravatar_hash
+                )
+            `)
+            .gt('created_at', this._lastPollAt)
+            .order('created_at', { ascending: true });
+
+        if (!error && data && data.length > 0) {
+            this._lastPollAt = data[data.length - 1].created_at;
+            const newMsgs = data.map(m => ({
+                ...m,
+                username:   m.profiles?.display_name || m.profiles?.username || 'لاعب',
+                avatar_url: m.profiles?.gravatar_hash
+                    ? `https://www.gravatar.com/avatar/${m.profiles.gravatar_hash}?d=identicon&s=40`
+                    : (m.profiles?.avatar_url || null)
+            }));
+            this.messages.push(...newMsgs);
+            // اقتصار على آخر 100 رسالة
+            if (this.messages.length > 100) this.messages = this.messages.slice(-100);
+            this._notifyListeners('new_message', newMsgs);
+        }
+    }
+
+    async deleteMessage(messageId) {
+        if (!this.supabase) return { error: 'Supabase not available' };
+        const userId = authManager.getUserId();
+        if (!userId) return { error: 'Not authenticated' };
+
+        const { error } = await this.supabase
+            .from('chat_messages')
+            .delete()
+            .eq('id', messageId)
+            .eq('user_id', userId); // حماية: يحذف فقط رسائله هو
+
+        if (error) return { error: error.message };
+
+        // حذف من الـ cache المحلي فوراً
+        this.messages = this.messages.filter(m => m.id !== messageId);
+        this._notifyListeners('message_deleted', { messageId });
+        return { success: true };
     }
 
     onMessage(callback) {
@@ -145,8 +192,8 @@ class ChatGlobalManager {
     }
 
     destroy() {
-        if (this.channel) this.channel.unsubscribe();
-        this.channel = null;
+        if (this._pollInterval) clearInterval(this._pollInterval);
+        this._pollInterval = null;
         this.initialized = false;
     }
 }
@@ -302,23 +349,51 @@ class ChatPrivateManager {
     subscribeToConversation(conversationId) {
         if (!this.supabase || this.channels.has(conversationId)) return;
 
-        const channel = this.supabase
-            .channel(`private-chat-${conversationId}`)
-            .on('postgres_changes', {
-                event: 'INSERT',
-                schema: 'public',
-                table: 'private_messages',
-                filter: `conversation_id=eq.${conversationId}`
-            }, (payload) => {
-                const msgs = this.messages.get(conversationId) || [];
-                msgs.push(payload.new);
-                this.messages.set(conversationId, msgs);
-                this._notifyListeners('new_private_message', payload.new);
-                this.loadConversations();
-            })
-            .subscribe();
+        // Polling بدلاً من Realtime
+        const lastAt = { value: new Date().toISOString() };
+        const intervalId = setInterval(async () => {
+            const { data, error } = await this.supabase
+                .from('private_messages')
+                .select('*')
+                .eq('conversation_id', conversationId)
+                .gt('created_at', lastAt.value)
+                .order('created_at', { ascending: true });
 
-        this.channels.set(conversationId, channel);
+            if (!error && data && data.length > 0) {
+                lastAt.value = data[data.length - 1].created_at;
+                const msgs = this.messages.get(conversationId) || [];
+                msgs.push(...data);
+                this.messages.set(conversationId, msgs);
+                data.forEach(msg => this._notifyListeners('new_private_message', msg));
+                this.loadConversations();
+            }
+        }, 3000);
+
+        // نخزن الـ interval ID بدلاً من channel
+        this.channels.set(conversationId, { unsubscribe: () => clearInterval(intervalId) });
+        console.log('[ChatPrivate] Polling conversation:', conversationId);
+    }
+
+    async deleteMessage(messageId, conversationId) {
+        if (!this.supabase) return { error: 'Supabase not available' };
+        const userId = authManager.getUserId();
+        if (!userId) return { error: 'Not authenticated' };
+
+        const { error } = await this.supabase
+            .from('private_messages')
+            .delete()
+            .eq('id', messageId)
+            .eq('sender_id', userId); // حماية: يحذف فقط رسائله هو
+
+        if (error) return { error: error.message };
+
+        // حذف من الـ cache المحلي فوراً
+        if (conversationId) {
+            const msgs = this.messages.get(conversationId) || [];
+            this.messages.set(conversationId, msgs.filter(m => m.id !== messageId));
+        }
+        this._notifyListeners('private_message_deleted', { messageId, conversationId });
+        return { success: true };
     }
 
     onEvent(callback) {

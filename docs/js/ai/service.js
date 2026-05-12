@@ -14,7 +14,7 @@ export class AIService {
         this._apiKey = options.apiKey || null;
 
         this.endpoints = {
-            gemini: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
+            gemini: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent',
             openai: 'https://api.openai.com/v1/chat/completions',
             anthropic: 'https://api.anthropic.com/v1/messages',
             custom: this.customEndpoint
@@ -59,7 +59,21 @@ export class AIService {
 
             if (!response.ok) {
                 const text = await response.text().catch(() => '');
-                throw new Error(`Worker error ${response.status}: ${text || response.statusText}`);
+                // استخرج رمز الخطأ بشكل نظيف بدل عرض الـ JSON الكامل
+                let errorCode = `${response.status}`;
+                let retryAfter = null;
+                try {
+                    const parsed = JSON.parse(text);
+                    const details = typeof parsed.details === 'string' ? JSON.parse(parsed.details) : parsed.details;
+                    const retryInfo = details?.error?.details?.find(d => d['@type']?.includes('RetryInfo'));
+                    if (retryInfo?.retryDelay) {
+                        retryAfter = parseInt(retryInfo.retryDelay);
+                    }
+                } catch (_) {}
+                const err = new Error(`Worker error ${errorCode}`);
+                err.status = response.status;
+                err.retryAfter = retryAfter;
+                throw err;
             }
 
             const data = await response.json();

@@ -371,14 +371,24 @@ export class ChatWidget {
             this.addMessage('ai', response);
         } catch (error) {
             this.hideTyping();
-            let errorMsg = 'عذراً، حدث خطأ. ';
-            if (error.message?.includes('API key')) {
-                errorMsg += 'تحقق من رابط الـ backend في السكربت.';
-            } else if (error.message?.includes('network')) {
-                errorMsg += 'تحقق من اتصال الإنترنت.';
+            let errorMsg;
+            const status = error.status || 0;
+
+            if (status === 429) {
+                const wait = error.retryAfter ? `انتظر ${error.retryAfter} ثانية ثم حاول مجدداً.` : 'حاول بعد قليل.';
+                errorMsg = `⏳ تم تجاوز الحد اليومي للذكاء الاصطناعي. ${wait}`;
+            } else if (status === 401 || error.message?.includes('API key')) {
+                errorMsg = '🔑 مفتاح الـ API غير صحيح، تحقق من إعدادات الـ Worker.';
+            } else if (status >= 500) {
+                errorMsg = '🔧 خطأ في الـ Worker، حاول لاحقاً.';
+            } else if (error.message?.includes('network') || error.name === 'TypeError') {
+                errorMsg = '📡 تعذر الاتصال، تحقق من الإنترنت.';
+            } else if (error.name === 'AbortError') {
+                errorMsg = '⏱ انتهت مهلة الاتصال، حاول مجدداً.';
             } else {
-                errorMsg += error.message || 'خطأ غير معروف';
+                errorMsg = '⚠️ حدث خطأ غير متوقع، حاول مجدداً.';
             }
+
             this.addMessage('ai', errorMsg);
         }
     }
@@ -493,7 +503,7 @@ export class ChatWidget {
 
     sendGameAction(actionId, actionLabel, state, gameName) {
         const stateStr = typeof state === 'object' ? JSON.stringify(state, null, 2) : state;
-        this.addMessage('game-context', stateStr, { gameName, actionLabel });
+        // لا نعرض الـ card — المعلومة موجودة في الـ prompt للـ AI
         const prompts = {
             'analyze':   `حلل هذا الموقف في لعبة ${gameName}:\n${stateStr}`,
             'best-move': `ما أفضل حركة في لعبة ${gameName}؟\n${stateStr}`,

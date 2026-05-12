@@ -226,7 +226,7 @@ export class ChatTabsWidget {
     // ─── Global Chat Logic ──────────────────────────────────────────────────
 
     async _initGlobalChat() {
-        await this.globalChat.init();
+        // ✅ سجّل الـ listener أولاً قبل init() عشان يستقبل 'loaded'
         this.globalChat.onMessage((event, data) => {
             if (event === 'new_message' || event === 'loaded') {
                 this._renderGlobalMessages();
@@ -234,7 +234,11 @@ export class ChatTabsWidget {
                     this._showBadge('global-badge');
                 }
             }
+            if (event === 'message_deleted') {
+                this._renderGlobalMessages();
+            }
         });
+        await this.globalChat.init();
     }
 
     _renderGlobalMessages() {
@@ -249,17 +253,31 @@ export class ChatTabsWidget {
             const time = msg.created_at
                 ? new Date(msg.created_at).toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })
                 : '';
+            const deleteBtn = isMe
+                ? `<button class="chat-delete-btn" data-msgid="${msg.id}" data-type="global" title="حذف"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="11" height="11"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg></button>`
+                : '';
             return `
-                <div class="chat-message ${isMe ? 'user' : 'ai'} global-msg">
+                <div class="chat-message ${isMe ? 'user' : 'ai'} global-msg" data-msgid="${msg.id}">
                     ${!isMe ? `<div class="global-avatar" style="background-image:url('${msg.avatar_url || ''}')">${msg.avatar_url ? '' : (msg.username?.[0] || '?')}</div>` : ''}
                     <div>
                         ${!isMe ? `<div class="global-username">${this._escapeHtml(msg.username || 'unknown')}</div>` : ''}
                         <div class="message-content">${this._formatMessage(msg.message)}</div>
-                        <div class="message-time">${time}</div>
+                        <div class="message-time">${time} ${deleteBtn}</div>
                     </div>
                 </div>
             `;
         }).join('');
+
+        // ربط أزرار الحذف
+        container.querySelectorAll('.chat-delete-btn[data-type="global"]').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                if (!confirm('حذف هذه الرسالة؟')) return;
+                btn.disabled = true;
+                const { error } = await this.globalChat.deleteMessage(btn.dataset.msgid);
+                if (error) { console.error('[ChatGlobal] Delete error:', error); btn.disabled = false; }
+            });
+        });
 
         container.scrollTop = container.scrollHeight;
     }
@@ -303,7 +321,7 @@ export class ChatTabsWidget {
     // ─── Private Chat Logic ─────────────────────────────────────────────────
 
     async _initPrivateChat() {
-        await this.privateChat.init();
+        // ✅ سجّل الـ listener أولاً
         this.privateChat.onEvent((event, data) => {
             if (event === 'conversations_loaded') {
                 this._renderConversationsList();
@@ -319,7 +337,13 @@ export class ChatTabsWidget {
             if (event === 'messages_loaded') {
                 this._renderPrivateMessages(data.conversationId);
             }
+            if (event === 'private_message_deleted') {
+                if (this.currentConversationId) {
+                    this._renderPrivateMessages(this.currentConversationId);
+                }
+            }
         });
+        await this.privateChat.init();
         this._updateUnreadBadge();
     }
 
@@ -402,16 +426,30 @@ export class ChatTabsWidget {
                 ? new Date(msg.created_at).toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })
                 : '';
             const status = isMe ? (msg.is_read ? '✓✓' : '✓') : '';
+            const deleteBtn = isMe
+                ? `<button class="chat-delete-btn" data-msgid="${msg.id}" data-type="private" title="حذف"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="11" height="11"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg></button>`
+                : '';
             return `
-                <div class="chat-message ${isMe ? 'user' : 'ai'}">
+                <div class="chat-message ${isMe ? 'user' : 'ai'}" data-msgid="${msg.id}">
                     <div class="message-avatar"><span class="gh-icon gh-icon-sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span></div>
                     <div>
                         <div class="message-content">${this._formatMessage(msg.message)}</div>
-                        <div class="message-time">${time} ${status}</div>
+                        <div class="message-time">${time} ${status} ${deleteBtn}</div>
                     </div>
                 </div>
             `;
         }).join('');
+
+        // ربط أزرار الحذف
+        container.querySelectorAll('.chat-delete-btn[data-type="private"]').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                if (!confirm('حذف هذه الرسالة؟')) return;
+                btn.disabled = true;
+                const { error } = await this.privateChat.deleteMessage(btn.dataset.msgid, conversationId);
+                if (error) { console.error('[ChatPrivate] Delete error:', error); btn.disabled = false; }
+            });
+        });
 
         container.scrollTop = container.scrollHeight;
     }

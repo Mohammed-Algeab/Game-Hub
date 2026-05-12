@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Game Hub - منصة ألعاب متكاملة">
+    <meta name="theme-color" content="#0a0e1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    <title>Game Hub - منصة الألعاب</title>
+    <script src="js/app/gamehub-init.js"></script>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/navigation.css">
+    <link rel="stylesheet" href="css/categories.css">
+    <link rel="stylesheet" href="css/svg-icons.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/chat.css">
+    <link rel="stylesheet" href="css/chat-tabs.css">
+<style>
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .game-card {
+            animation: fadeInUp 0.5s ease backwards;
+        }
+        .game-card:nth-child(1) { animation-delay: 0.1s; }
+        .game-card:nth-child(2) { animation-delay: 0.2s; }
+        .game-card:nth-child(3) { animation-delay: 0.3s; }
+        .game-card:nth-child(4) { animation-delay: 0.4s; }
+        .game-card:nth-child(5) { animation-delay: 0.5s; }
+        .game-card:nth-child(6) { animation-delay: 0.6s; }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <a href="index.html" class="logo">
+            <span class="logo-icon-wrap"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 12h4m-2-2v4"/><circle cx="16" cy="11" r="1" fill="currentColor"/><circle cx="19" cy="13" r="1" fill="currentColor"/></svg></span></span>
+            <span>Game Hub</span>
+        </a>
+        <nav class="main-nav">
+            <a href="index.html" class="nav-link active">الرئيسية</a>
+            <a href="about.html" class="nav-link">حول</a>
+            <a href="support.html" class="nav-link">الدعم</a>
+            <div class="dropdown" id="categories-dropdown-container">
+                <button class="dropdown-trigger">
+                    الفئات
+                    <span class="dropdown-arrow"><span class="gh-icon" style="font-size:0.75rem"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></span>
+                </button>
+                <div class="dropdown-menu" id="categories-dropdown"></div>
+            </div>
+        </nav>
+<button class="header-profile" type="button" id="header-profile-btn" aria-label="الملف الشخصي">
+    <span class="profile-avatar"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span></span>
+    <span class="profile-label">دخول</span>
+</button>
+    </header>
+
+    <nav class="bottom-nav" id="bottom-nav">
+        <a href="index.html" class="bottom-nav-item active" data-page="home">
+            <span class="bnav-icon"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg></span></span>
+            <span class="bnav-label">الرئيسية</span>
+        </a>
+        <a href="about.html" class="bottom-nav-item" data-page="about">
+            <span class="bnav-icon"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="16" x2="12" y2="11"/><circle cx="12" cy="8" r="0.5" fill="currentColor"/></svg></span></span>
+            <span class="bnav-label">حول</span>
+        </a>
+        <a href="support.html" class="bottom-nav-item" data-page="support">
+            <span class="bnav-icon"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3v5z"/><path d="M3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3v5z"/></svg></span></span>
+            <span class="bnav-label">الدعم</span>
+        </a>
+        <button class="bottom-nav-item" id="categories-mobile-btn" data-page="categories" type="button">
+            <span class="bnav-icon"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></span></span>
+            <span class="bnav-label">الفئات</span>
+        </button>
+    </nav>
+
+    <div class="mobile-drawer-overlay" id="categories-drawer-overlay" style="display: none;"></div>
+    <div class="mobile-drawer" id="categories-drawer" style="display: none;">
+        <div class="drawer-header">
+            <h3><span class="gh-icon gh-icon-sm" style="margin-inline-end:6px;vertical-align:-0.1em"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></span>تصفية حسب الفئة</h3>
+            <button class="drawer-close" id="categories-drawer-close" type="button" aria-label="إغلاق"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></button>
+        </div>
+        <div class="drawer-content" id="mobile-categories-menu"></div>
+    </div>
+
+    <main class="main-content">
+        <section class="hero-section">
+            <h1 class="hero-title">مرحباً بك في Game Hub</h1>
+            <p class="hero-subtitle">
+                منصة ألعاب متكاملة تجمع أفضل الألعاب الكلاسيكية والحديثة في مكان واحد.
+                العب الآن على هاتفك أو كمبيوترك!
+            </p>
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-value" id="stat-total">0</div>
+                    <div class="stat-label">لعبة</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="stat-mobile">0</div>
+                    <div class="stat-label">تدعم الهاتف</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="stat-categories">0</div>
+                    <div class="stat-label">فئة</div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-header">
+                <h2 class="section-title"><span class="gh-icon section-title-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></span>الألعاب المتاحة</h2>
+                <span class="filter-info" id="filter-info">جميع الألعاب</span>
+            </div>
+
+            <div class="games-grid" id="games-grid">
+                <!-- تُحمَّل الألعاب تلقائياً من games/manifest.json -->
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="cta-card">
+                <h2><span class="gh-icon" style="margin-inline-end:8px;vertical-align:-0.15em;font-size:1.15em"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8 2 5 6 5 10c0 3 1.5 5.5 3.5 7L12 22l3.5-5C17.5 15.5 19 13 19 10c0-4-3-8-7-8z"/><circle cx="12" cy="10" r="2.5"/><path d="M6 17l-2 4M18 17l2 4"/></svg></span>هل تريد المزيد من الألعاب؟</h2>
+                <p>المشروع مفتوح المصدر وقابل للتطوير. انضم إلينا وساهم في تطوير المنصة.</p>
+                <a href="about.html" class="btn btn-primary">تعرف على المشروع ←</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <p>Game Hub - منصة ألعاب متكاملة</p>
+        <p>مبني بـ HTML, CSS, JavaScript</p>
+    </footer>
+
+    <script src="js/mobile.js" type="module"></script>
+    <script src="js/main.js"></script>
+    <script type="module">
+        import { initChat }      from './js/chat.js';
+        import { initGamesGrid } from './js/games-loader.js';
+        import { initGameHub }   from './foundation/gamehub-api.js';
+        import { profileUI }     from './foundation/profile-ui.js';
+        
+        initGamesGrid();
+        
+        // تهيئة GameHub أولاً (المصادقة + البروفايل + الإنجازات)
+        // مهم: لازم يكتمل قبل initChat حتى authManager يكون جاهزاً
+        await initGameHub();
+
+        // تهيئة الشات بعد ما المصادقة تكتمل
+        initChat();
+        
+        // تهيئة واجهة البروفايل
+        profileUI.init();
+        
+        // ربط زر البروفايل في الـ Header
+        const headerProfileBtn = document.getElementById('header-profile-btn');
+        if (headerProfileBtn) {
+            headerProfileBtn.addEventListener('click', () => {
+                profileUI.open('profile');
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+import { TETRIS_PIECES } from './pieces.js';
+
+export const CONFIG = {
+    COLS: 10,
+    ROWS: 20,
+    NEXT_COLS: 4,
+    NEXT_ROWS: 4,
+    CELL_SIZE: 30,
+    CELL_SIZE_MOBILE: 25,
+    INITIAL_SPEED: 800,
+    MIN_SPEED: 100,
+    SPEED_DECREMENT: 60,
+    LEVEL_LINES: 10,
+    SCORE: { 1: 100, 2: 300, 3: 500, 4: 800 },
+    SOFT_DROP_SCORE: 1,
+    HARD_DROP_MULTIPLIER: 2,
+    PIECES: TETRIS_PIECES.shapes,
+    COLORS: TETRIS_PIECES.colors,
+    SPAWN: TETRIS_PIECES.spawn,
+    WALL_KICK_JLSTZ: TETRIS_PIECES.wallKicks.JLSTZ,
+    WALL_KICK_I: TETRIS_PIECES.wallKicks.I,
+    KEYS: TETRIS_PIECES.keys,
+    MOBILE_BUTTONS: TETRIS_PIECES.mobileButtons,
+    SOUND_ENABLED: false
+};
+
+export default CONFIG;

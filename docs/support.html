@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="الدعم والمساعدة - Game Hub">
+    <meta name="theme-color" content="#0a0e1a">
+    <title>الدعم - Game Hub</title>
+    <script src="js/app/gamehub-init.js"></script>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/navigation.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/svg-icons.css">
+    <link rel="stylesheet" href="css/chat.css">
+    <link rel="stylesheet" href="css/chat-tabs.css">
+    <style>
+        .support-hero {
+            text-align: center;
+            padding: 40px 24px 28px;
+            background: linear-gradient(135deg, rgba(16,185,129,0.07) 0%, rgba(99,102,241,0.07) 100%);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            margin-bottom: 32px;
+        }
+        .support-hero .hero-icon { font-size: 3.5rem; margin-bottom: 10px; display: block; }
+        .support-hero h1 { font-size: 1.8rem; font-weight: 800; color: var(--text); margin-bottom: 10px; }
+        .support-hero p { color: var(--text-muted); font-size: 0.95rem; max-width: 480px; margin: 0 auto; line-height: 1.7; }
+
+        .support-section { margin-bottom: 36px; }
+        .support-section h2 { font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+        .support-section h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+        /* FAQ */
+        .faq-list { display: flex; flex-direction: column; gap: 10px; }
+        .faq-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+        .faq-question {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: right;
+            transition: var(--transition);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .faq-question:hover { background: rgba(99,102,241,0.05); }
+        .faq-arrow { font-size: 0.75rem; color: var(--text-muted); transition: transform 0.25s ease; flex-shrink: 0; }
+        .faq-item.open .faq-arrow { transform: rotate(180deg); }
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+        .faq-item.open .faq-answer { max-height: 300px; padding: 0 20px 16px; }
+        .faq-answer p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.7; margin: 0; }
+
+        /* Quick Help Cards */
+        .help-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+        .help-card {
+            padding: 18px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            transition: var(--transition);
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .help-card:hover { border-color: var(--border-hover); background: var(--bg-card-hover); transform: translateY(-2px); }
+        .help-card .help-icon { font-size: 2rem; margin-bottom: 8px; display: block; }
+        .help-card h3 { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+        .help-card p { font-size: 0.8rem; color: var(--text-muted); margin: 0; line-height: 1.5; }
+
+        /* Contact Form */
+        .contact-form {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 28px;
+        }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 0.88rem; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.92rem;
+            transition: var(--transition);
+            outline: none;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99,102,241,0.12); }
+        .form-group textarea { resize: vertical; min-height: 120px; }
+        .form-group select { cursor: pointer; }
+        .form-group select option { background: var(--bg-card); color: var(--text); }
+
+        .submit-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 28px;
+            background: var(--primary);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .submit-btn:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        .submit-btn:active { transform: scale(0.98); }
+
+        .form-success {
+            display: none;
+            text-align: center;
+            padding: 32px;
+        }
+        .form-success .success-icon { font-size: 3rem; display: block; margin-bottom: 12px; }
+        .form-success h3 { color: var(--accent); margin-bottom: 8px; }
+        .form-success p { color: var(--text-muted); font-size: 0.9rem; }
+
+        .back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.3); border-radius: 12px; color: var(--primary-light); font-weight: 600; text-decoration: none; transition: var(--transition); }
+        .back-btn:hover { background: rgba(99,102,241,0.2); }
+
+        @media (max-width: 600px) {
+            .support-hero h1 { font-size: 1.4rem; }
+            .help-cards { grid-template-columns: 1fr 1fr; }
+            .contact-form { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <a href="index.html" class="logo">
+            <span class="logo-icon-wrap"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 12h4m-2-2v4"/><circle cx="16" cy="11" r="1" fill="currentColor"/><circle cx="19" cy="13" r="1" fill="currentColor"/></svg></span></span>
+            <span>Game Hub</span>
+        </a>
+        <nav class="main-nav">
+            <a href="index.html" class="nav-link">الرئيسية</a>
+            <a href="about.html" class="nav-link">حول</a>
+            <a href="support.html" class="nav-link active">الدعم</a>
+        </nav>
+        <button class="header-profile" type="button" id="header-profile-btn" aria-label="الملف الشخصي">
+            <span class="profile-avatar"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span></span>
+            <span class="profile-label">دخول</span>
+        </button>
+    </header>
+
+    <nav class="bottom-nav" id="bottom-nav">
+        <a href="index.html" class="bottom-nav-item" data-page="home">
+            <span class="bnav-icon"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg></span></span>
+            <span class="bnav-label">الرئيسية</span>
+        </a>
+        <a href="about.html" class="bottom-nav-item" data-page="about">
+            <span class="bnav-icon"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="16" x2="12" y2="11"/><circle cx="12" cy="8" r="0.5" fill="currentColor"/></svg></span></span>
+            <span class="bnav-label">حول</span>
+        </a>
+        <a href="support.html" class="bottom-nav-item active" data-page="support">
+            <span class="bnav-icon"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3v5z"/><path d="M3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3v5z"/></svg></span></span>
+            <span class="bnav-label">الدعم</span>
+        </a>
+        <a href="index.html" class="bottom-nav-item" data-page="home">
+            <span class="bnav-icon"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></span></span>
+            <span class="bnav-label">الفئات</span>
+        </a>
+    </nav>
+
+    <main class="main-content">
+        <div class="info-page">
+
+            <!-- Hero -->
+            <div class="support-hero">
+                <span class="hero-icon-wrap"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><line x1="5.6" y1="5.6" x2="8.5" y2="8.5"/><line x1="15.5" y1="15.5" x2="18.4" y2="18.4"/><line x1="18.4" y1="5.6" x2="15.5" y2="8.5"/><line x1="8.5" y1="15.5" x2="5.6" y2="18.4"/></svg></span></span>
+                <h1>مركز الدعم</h1>
+                <p>هل تواجه مشكلة أو لديك اقتراح؟ ابحث في الأسئلة الشائعة أو تواصل معنا مباشرة.</p>
+            </div>
+
+            <!-- Quick Help -->
+            <div class="support-section">
+                <h2><span class="gh-icon" style="margin-inline-end:8px;vertical-align:-0.1em"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>مساعدة سريعة</h2>
+                <div class="help-cards">
+                    <a href="index.html" class="help-card">
+                        <span class="help-icon"><span class="gh-icon gh-icon-lg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 12h4m-2-2v4"/><circle cx="16" cy="11" r="1" fill="currentColor"/><circle cx="19" cy="13" r="1" fill="currentColor"/></svg></span></span>
+                        <h3>ابدأ اللعب</h3>
+                        <p>اختر لعبة من الرئيسية وابدأ فوراً بدون تسجيل</p>
+                    </a>
+                    <div class="help-card" onclick="document.querySelector('.header-profile')?.click()">
+                        <span class="help-icon"><span class="gh-icon gh-icon-lg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span></span>
+                        <h3>البروفايل</h3>
+                        <p>اضغط على زر البروفايل أعلى الشاشة لفتح ملفك الشخصي</p>
+                    </div>
+                    <div class="help-card">
+                        <span class="help-icon"><span class="gh-icon gh-icon-lg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="12" rx="3"/><path d="M9 9V7a3 3 0 016 0v2"/><circle cx="9" cy="14" r="1.5" fill="currentColor"/><circle cx="15" cy="14" r="1.5" fill="currentColor"/><path d="M9 18h6"/><path d="M12 3v2"/></svg></span></span>
+                        <h3>مساعد AI</h3>
+                        <p>اضغط على زر الروبوت العائم داخل أي لعبة للحصول على نصائح</p>
+                    </div>
+                    <a href="games/chess/online.html" class="help-card">
+                        <span class="help-icon"><span class="gh-icon gh-icon-lg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20v-2h10v2"/><path d="M7 18c0 0 .5-2 2-3l1-4c-1 0-2-1-2-2s1-2 2-2h4c1 0 2 1 2 2s-1 2-2 2l1 4c1.5 1 2 3 2 3"/><line x1="7" y1="20" x2="17" y2="20"/><path d="M9 7V5h2V4h2v1h2v2"/></svg></span></span>
+                        <h3>شطرنج أونلاين</h3>
+                        <p>العب مع صديق عبر مشاركة كود الغرفة</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- FAQ -->
+            <div class="support-section">
+                <h2><span class="gh-icon" style="margin-inline-end:8px;vertical-align:-0.1em"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.5" fill="currentColor"/></svg></span>الأسئلة الشائعة</h2>
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFaq(this)">
+                            هل أحتاج تسجيل دخول للعب؟
+                            <span class="faq-arrow"><span class="gh-icon" style="font-size:0.8rem"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>لا، يمكنك اللعب فوراً كضيف. أفضل نقاطك تُحفظ تلقائياً في متصفحك. التسجيل مطلوب فقط لمزامنة البيانات مع السحابة والمنافسة في لوحة الصدارة العالمية.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFaq(this)">
+                            كيف ألعب الشطرنج مع صديق أونلاين؟
+                            <span class="faq-arrow"><span class="gh-icon" style="font-size:0.8rem"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>افتح صفحة الشطرنج واختر "لعب أونلاين"، ثم أنشئ غرفة جديدة وشارك الكود المكوّن من 6 أحرف مع صديقك. بمجرد انضمامه تبدأ المباراة تلقائياً.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFaq(this)">
+                            كيف أستخدم مساعد الذكاء الاصطناعي؟
+                            <span class="faq-arrow"><span class="gh-icon" style="font-size:0.8rem"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>اضغط على زر الدردشة العائم داخل أي لعبة. لتفعيله تحتاج مفتاح Gemini API، اضغط على أيقونة الإعدادات داخل نافذة الدردشة وأدخل مفتاحك. يمكنك الحصول على مفتاح مجاني من Google AI Studio.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFaq(this)">
+                            هل الألعاب تعمل على الهاتف؟
+                            <span class="faq-arrow"><span class="gh-icon" style="font-size:0.8rem"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>نعم، جميع الألعاب مُحسّنة للهاتف مع دعم اللمس الكامل. تتريس وثعبان وسودوكو لديهم أزرار تحكم خاصة بالهاتف. الشطرنج يدعم السحب والإفلات باللمس.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFaq(this)">
+                            لماذا لا يعمل تسجيل الدخول بـ GitHub؟
+                            <span class="faq-arrow"><span class="gh-icon" style="font-size:0.8rem"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>ميزة تسجيل الدخول بـ GitHub تتطلب إعداد Supabase وهي قيد التطوير حالياً. في الوقت الحالي، يمكنك اللعب كضيف ومتابعة نقاطك محلياً بشكل كامل.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFaq(this)">
+                            كيف أحفظ تقدمي في اللعب؟
+                            <span class="faq-arrow"><span class="gh-icon" style="font-size:0.8rem"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>يتم الحفظ تلقائياً في متصفحك (localStorage). بياناتك لن تُفقد ما لم تمسح بيانات المتصفح. إذا سجّلت دخولك بـ GitHub، ستُزامَن بياناتك مع السحابة وتُتاح على جميع أجهزتك.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFaq(this)">
+                            الموقع لا يعمل بشكل صحيح، ماذا أفعل؟
+                            <span class="faq-arrow"><span class="gh-icon" style="font-size:0.8rem"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>جرّب: (1) مسح cache المتصفح وإعادة التحميل. (2) تجربة متصفح مختلف. (3) إذا استمرت المشكلة، تواصل معنا عبر النموذج أدناه مع ذكر المتصفح والجهاز المستخدم.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="support-section">
+                <h2><span class="gh-icon" style="margin-inline-end:8px;vertical-align:-0.1em"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>تواصل معنا</h2>
+                <div class="contact-form">
+                    <form id="support-form" onsubmit="handleFormSubmit(event)">
+                        <div class="form-group">
+                            <label for="subject">نوع الطلب</label>
+                            <select id="subject">
+                                <option value="">اختر نوع الطلب...</option>
+                                <option value="bug">🐛 الإبلاغ عن خطأ</option>
+                                <option value="feature">💡 اقتراح ميزة جديدة</option>
+                                <option value="question">❓ سؤال عام</option>
+                                <option value="other">📝 أخرى</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="name">الاسم (اختياري)</label>
+                            <input type="text" id="name" placeholder="اسمك أو اسمك في اللعبة">
+                        </div>
+                        <div class="form-group">
+                            <label for="message">الرسالة <span style="color:var(--secondary)">*</span></label>
+                            <textarea id="message" placeholder="اكتب تفاصيل مشكلتك أو اقتراحك هنا..." required></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn"><span class="gh-icon" style="margin-inline-end:6px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></span>إرسال الرسالة</button>
+                    </form>
+                    <div class="form-success" id="form-success">
+                        <span class="success-icon"><span class="gh-icon gh-icon-3xl" style="color:#10b981"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span></span>
+                        <h3>شكراً لتواصلك!</h3>
+                        <p>استلمنا رسالتك وسنرد عليك في أقرب وقت ممكن.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align:center; margin-top:8px;">
+                <a href="index.html" class="back-btn"><span class="gh-icon" style="margin-inline-end:6px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></span>العودة للرئيسية</a>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <p>Game Hub — منصة ألعاب متكاملة</p>
+    </footer>
+
+    <script>
+        function toggleFaq(btn) {
+            const item = btn.closest('.faq-item');
+            const isOpen = item.classList.contains('open');
+            document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+            if (!isOpen) item.classList.add('open');
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const form = document.getElementById('support-form');
+            const success = document.getElementById('form-success');
+            form.style.display = 'none';
+            success.style.display = 'block';
+        }
+    </script>
+    <script src="js/mobile.js" type="module"></script>
+    <script src="js/main.js"></script>
+    <script type="module">
+        import { initChat }      from './js/chat.js';
+        import { initGamesGrid } from './js/games-loader.js';
+        import { initGameHub }   from './foundation/gamehub-api.js';
+        import { profileUI }     from './foundation/profile-ui.js';
+        
+        initGamesGrid();
+        
+        // تهيئة GameHub أولاً (المصادقة + البروفايل + الإنجازات)
+        // مهم: لازم يكتمل قبل initChat حتى authManager يكون جاهزاً
+        await initGameHub();
+
+        // تهيئة الشات بعد ما المصادقة تكتمل
+        initChat();
+        
+        // تهيئة واجهة البروفايل
+        profileUI.init();
+        
+        // ربط زر البروفايل في الـ Header
+        const headerProfileBtn = document.getElementById('header-profile-btn');
+        if (headerProfileBtn) {
+            headerProfileBtn.addEventListener('click', () => {
+                profileUI.open('profile');
+            });
+        }
+    </script>
+</body>
+</html>

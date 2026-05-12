@@ -1,0 +1,18 @@
+{
+  "id": "pool",
+  "name": "بلياردو",
+  "nameEn": "Pool",
+  "description": "أدخل الكرات في الجيوب باستخدام عصا البلياردو في هذه المحاكاة الواقعية.",
+  "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><circle cx=\"12\" cy=\"12\" r=\"5\" fill=\"currentColor\" opacity=\"0.15\"/><circle cx=\"12\" cy=\"12\" r=\"2.5\" fill=\"currentColor\"/><text x=\"10.5\" y=\"14\" font-size=\"3.5\" fill=\"white\" stroke=\"none\" font-family=\"monospace\" font-weight=\"bold\">8</text></svg>",
+  "status": "soon",
+  "url": null,
+  "category": "sports",
+  "categoryLabel": "رياضة",
+  "mobile": false,
+  "tags": [
+    "رياضة",
+    "محاكاة"
+  ],
+  "color": "#14b8a6",
+  "categoryIcon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M8 21h8m-4-4v4\"/><path d=\"M6 3h12v8a6 6 0 01-12 0V3z\"/><path d=\"M6 7H3a1 1 0 00-1 1v2a4 4 0 004 4M18 7h3a1 1 0 011 1v2a4 4 0 01-4 4\"/></svg>"
+}

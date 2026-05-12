@@ -1,0 +1,1255 @@
+/* chess.css — واجهة لعبة الشطرنج */
+
+/* ═══ الصفحة العامة / الشريط العلوي ════════════════════════════════════════ */
+
+.chess-page {
+    width: min(1120px, 100%);
+    margin: 0 auto;
+    /* نضيف ارتفاع الهيدر الثابت لنمنع الطمر */
+    padding: calc(var(--header-height) + 1.25rem) 1rem 2rem;
+    box-sizing: border-box;
+}
+
+.chess-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 0.25rem 0;
+}
+
+.chess-header h1 {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.5rem 0.85rem;
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--text);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    font-size: 0.92rem;
+    line-height: 1;
+    transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+    white-space: nowrap;
+}
+
+.back-btn:hover {
+    transform: translateX(-2px);
+    opacity: 0.95;
+    background: var(--bg-card-hover);
+    border-color: var(--border-hover);
+}
+
+/* ═══ تخطيط الصفحة ═══════════════════════════════════════════════════════════ */
+
+.chess-main {
+    width: 100%;
+    min-height: calc(100svh - var(--header-height));
+    padding: 0 0 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+/* ═══ صفحة الاختيار ═════════════════════════════════════════════════════════ */
+
+.chess-select-main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    min-height: calc(100svh - var(--header-height) - 140px);
+    padding: 12px 0 0;
+}
+
+.chess-select-hero {
+    text-align: center;
+}
+
+.chess-hero-icon {
+    font-size: 5rem;
+    line-height: 1;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.4));
+}
+
+.chess-select-hero h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 8px;
+}
+
+.chess-select-hero p {
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin: 0;
+}
+
+.chess-modes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 860px;
+}
+
+.chess-mode-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    text-decoration: none;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+    transition: var(--transition);
+    position: relative;
+    cursor: pointer;
+}
+
+.chess-mode-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--primary);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-glow);
+}
+
+.mode-icon {
+    font-size: 2.8rem;
+    line-height: 1;
+}
+
+.chess-mode-card h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text);
+}
+
+.chess-mode-card > p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.mode-features {
+    list-style: none;
+    margin: 4px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+    text-align: right;
+}
+
+.mode-features li {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    padding-right: 14px;
+    position: relative;
+}
+
+.mode-features li::before {
+    content: '✓';
+    position: absolute;
+    right: 0;
+    color: var(--accent);
+    font-size: 0.7rem;
+}
+
+.mode-badge {
+    margin-top: 6px;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+.mode-badge.available {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--accent);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.mode-badge.soon {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary-light);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+/* ═══ شريط الحالة ════════════════════════════════════════════════════════════ */
+
+.chess-status {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    text-align: center;
+    min-width: 220px;
+    letter-spacing: 0.02em;
+}
+
+/* ═══ التخطيط الرئيسي ════════════════════════════════════════════════════════ */
+
+.chess-layout {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 1120px;
+    justify-content: center;
+}
+
+/* ═══ الرقعة ═════════════════════════════════════════════════════════════════ */
+
+.chess-board-wrapper {
+    position: relative;
+    flex-shrink: 0;
+    border-radius: 14px;
+    overflow: hidden;
+    padding: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+}
+
+#chess-canvas {
+    display: block;
+    cursor: pointer;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* ═══ نافذة الترقية ══════════════════════════════════════════════════════════ */
+
+.promotion-dialog {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 14, 26, 0.88);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    z-index: 10;
+    backdrop-filter: blur(4px);
+}
+
+.promotion-dialog p {
+    color: var(--text);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.promotion-choices {
+    display: flex;
+    gap: 12px;
+}
+
+.prom-btn {
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 1.8rem;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-family: "Segoe UI Symbol", Arial, sans-serif;
+}
+
+.prom-btn:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-glow);
+}
+
+/* ═══ الشريط الجانبي ════════════════════════════════════════════════════════ */
+
+.chess-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 300px;
+    max-width: 320px;
+    flex: 1;
+    position: sticky;
+    top: calc(var(--header-height) + 16px);
+    padding: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow-md);
+}
+
+/* أزرار وضع اللعب */
+.chess-modes {
+    display: flex;
+    gap: 8px;
+}
+
+.mode-btn {
+    flex: 1;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    padding: 8px 6px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 500;
+}
+
+.mode-btn.active,
+.mode-btn:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+/* سجل الحركات */
+.chess-history-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    flex: 1;
+}
+
+.chess-history-box h3 {
+    margin: 0 0 10px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.move-list {
+    max-height: 300px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+
+.move-row {
+    display: grid;
+    grid-template-columns: 28px 1fr 1fr;
+    gap: 4px;
+    font-size: 0.82rem;
+    padding: 3px 4px;
+    border-radius: 4px;
+}
+
+.move-row:hover { background: var(--bg-card-hover); }
+
+.move-num { color: var(--text-muted); font-size: 0.75rem; }
+.move-w   { color: var(--text); font-weight: 500; }
+.move-b   { color: var(--text-muted); }
+
+/* أزرار التحكم */
+.chess-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.ctrl-btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    text-decoration: none;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 0.82rem;
+    padding: 8px 10px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 500;
+    min-height: 40px;
+}
+
+.ctrl-btn:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-hover);
+}
+
+.ctrl-btn.danger:hover {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgb(239, 68, 68);
+    color: rgb(239, 68, 68);
+}
+
+.ctrl-btn.primary {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+.ctrl-btn.primary:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+    color: #fff;
+}
+
+.ctrl-btn-sm {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    padding: 4px 8px;
+    cursor: pointer;
+}
+
+/* ═══ مساعد ══════════════════════════════════════════════════════════════════ */
+
+.hidden { display: none !important; }
+
+/* ═══ نافذة نهاية اللعبة ═════════════════════════════════════════════════════ */
+
+.gameover-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 14, 26, 0.80);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    backdrop-filter: blur(6px);
+    animation: fadeIn 0.3s ease;
+}
+
+.gameover-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 40px 48px;
+    text-align: center;
+    box-shadow: var(--shadow-lg), 0 0 40px rgba(99,102,241,0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    max-width: 340px;
+    width: 90%;
+}
+
+#gameover-icon  { font-size: 3rem; }
+#gameover-title { margin: 0; font-size: 1.5rem; color: var(--text); }
+#gameover-msg   { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
+
+#gameover-restart {
+    margin-top: 8px;
+    padding: 10px 28px;
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+    font-size: 0.95rem;
+}
+
+#gameover-restart:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+/* ═══ مستوى الصعوبة (ai.html) ════════════════════════════════════════════════ */
+
+.chess-difficulty {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+}
+
+.chess-difficulty h3 {
+    margin: 0 0 10px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.difficulty-btns {
+    display: flex;
+    gap: 6px;
+}
+
+.diff-btn {
+    flex: 1;
+    background: var(--bg-card-hover);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    padding: 6px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.diff-btn.active,
+.diff-btn:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+/* زر النصيحة */
+.advice-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border: none;
+    border-radius: var(--radius-sm);
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 10px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.advice-btn:hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
+}
+
+.advice-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    font-size: 0.83rem;
+    color: var(--text);
+    line-height: 1.6;
+    max-height: 220px;
+    overflow: auto;
+}
+
+/* ═══ غرفة الأونلاين (online.html) ══════════════════════════════════════════ */
+
+.online-room-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+}
+
+.online-room-box h3 {
+    margin: 0 0 12px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.room-create {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.room-join {
+    display: flex;
+    gap: 6px;
+}
+
+.room-join input {
+    flex: 1;
+    background: var(--bg-card-hover);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 7px 10px;
+    font-size: 0.85rem;
+    text-align: center;
+    letter-spacing: 0.1em;
+}
+
+.room-join input::placeholder {
+    color: var(--text-muted);
+}
+
+.room-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 8px;
+    background: var(--bg-card-hover);
+    border-radius: 8px;
+    font-size: 0.85rem;
+}
+
+.room-info strong {
+    font-size: 1.1rem;
+    letter-spacing: 0.15em;
+    color: var(--primary-light);
+}
+
+.gameover-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 8px;
+}
+
+/* ═══ موبايل ══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 900px) {
+    .chess-layout {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .chess-sidebar {
+        width: min(100%, 640px);
+        min-width: 0;
+        position: static;
+        top: auto;
+    }
+}
+
+@media (max-width: 680px) {
+    .chess-page {
+        padding: 1rem 0.85rem 1.5rem;
+    }
+
+    .chess-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .chess-select-main {
+        gap: 24px;
+        min-height: auto;
+        padding-top: 0.5rem;
+    }
+
+    .chess-hero-icon {
+        font-size: 3.5rem;
+    }
+
+    .chess-select-hero h1 {
+        font-size: 1.8rem;
+    }
+
+    .chess-modes-grid {
+        grid-template-columns: 1fr;
+        max-width: 360px;
+    }
+
+    .chess-status {
+        width: min(92vw, 360px);
+        min-width: unset;
+        padding: 10px 18px;
+    }
+
+    .chess-board-wrapper {
+        width: min(92vw, 560px);
+        padding: 8px;
+    }
+
+    .chess-sidebar {
+        width: min(92vw, 560px);
+        min-width: unset;
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .move-list {
+        max-height: 120px;
+    }
+
+    .chess-controls {
+        width: 100%;
+    }
+
+    .ctrl-btn {
+        min-height: 48px;
+    }
+}
+
+/* ═══ Online Chess ═══════════════════════════════════════════════════════════ */
+.waiting-screen { position:absolute; inset:0; background:rgba(10,14,26,0.85); display:flex; align-items:center; justify-content:center; z-index:5; backdrop-filter:blur(4px); }
+.waiting-screen.hidden { display:none; }
+.waiting-inner { text-align:center; color:var(--text); }
+.waiting-icon { font-size:4rem; animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.1);opacity:.7} }
+.room-actions { display:flex; flex-direction:column; gap:8px; }
+.room-join-row { display:flex; gap:6px; }
+.room-join-row input { flex:1; background:var(--bg-card-hover); border:1px solid var(--border); border-radius:8px; color:var(--text); padding:8px 10px; font-size:.9rem; text-align:center; letter-spacing:.1em; }
+.room-code-display { display:flex; align-items:center; gap:8px; background:var(--bg-card-hover); border-radius:10px; padding:10px 14px; margin-bottom:6px; }
+.room-code-label { color:var(--text-muted); font-size:.82rem; }
+.room-code-value { font-size:1.5rem; font-weight:700; letter-spacing:.18em; color:var(--primary-light); font-family:monospace; }
+.room-waiting-hint { font-size:.75rem; color:var(--text-muted); margin:6px 0 0; text-align:center; }
+.player-info { margin:4px 0; }
+.color-badge { padding:8px 14px; border-radius:var(--radius-sm); font-weight:600; font-size:.9rem; text-align:center; }
+.color-badge.color-w { background:rgba(240,217,181,.15); border:1px solid rgba(240,217,181,.3); color:#f0d9b5; }
+.color-badge.color-b { background:rgba(53,53,53,.3); border:1px solid rgba(180,180,180,.2); color:#ccc; }
+.online-chat-box { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; }
+.chat-messages { height:80px; overflow-y:auto; padding:8px; display:flex; flex-direction:column; gap:4px; scrollbar-width:thin; }
+.chat-msg { font-size:.78rem; }
+.chat-from { font-weight:600; color:var(--primary-light); }
+.chat-me { text-align:right; }
+.chat-them { text-align:left; color:var(--text-muted); }
+.chat-input-row { display:flex; border-top:1px solid var(--border); }
+.chat-input-row input { flex:1; background:transparent; border:none; padding:7px 10px; font-size:.82rem; color:var(--text); outline:none; }
+.chat-input-row input::placeholder { color:var(--text-muted); }
+
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   Foundation Visual Style — chess.css
+   تطبيق الأسلوب البصري الموحد على لعبة الشطرنج
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+@keyframes chessPageFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes chessModalFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+@keyframes chessModalSlideUp {
+    from { opacity: 0; transform: translateY(30px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes chessIconBounce {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-10px); }
+}
+
+/* ── الصفحة العامة ── */
+.chess-page {
+    animation: chessPageFadeIn 0.5s ease-out;
+    background: radial-gradient(ellipse at top, rgba(99,102,241,0.04) 0%, transparent 55%);
+}
+
+/* ── شريط الحالة: يصبح كـ Foundation status bar ── */
+.chess-status {
+    background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.12));
+    border: 1px solid rgba(99,102,241,0.25);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    font-size: 1rem;
+    font-weight: 700;
+    color: #a5b4fc;
+    letter-spacing: 0.03em;
+}
+
+/* ── الشريط الجانبي ── */
+.chess-sidebar {
+    background: linear-gradient(160deg, rgba(99,102,241,0.07), rgba(139,92,246,0.07));
+    border: 1px solid rgba(99,102,241,0.22);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    gap: 14px;
+}
+
+/* لوحات داخل الشريط الجانبي */
+.chess-history-box,
+.chess-difficulty {
+    background: linear-gradient(135deg, rgba(99,102,241,0.05), rgba(139,92,246,0.05));
+    border: 1px solid rgba(99,102,241,0.18);
+    border-radius: var(--radius-sm);
+    transition: border-color 0.3s ease, background 0.3s ease;
+}
+.chess-history-box:hover,
+.chess-difficulty:hover {
+    border-color: rgba(99,102,241,0.35);
+    background: linear-gradient(135deg, rgba(99,102,241,0.09), rgba(139,92,246,0.09));
+}
+
+.chess-history-box h3,
+.chess-difficulty h3 {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    border-bottom: 1px solid rgba(99,102,241,0.2);
+    padding-bottom: 8px;
+    letter-spacing: 0.6px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+/* ── رقعة الشطرنج ── */
+.chess-board-wrapper {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border: 1.5px solid rgba(99,102,241,0.3);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(99,102,241,0.08);
+    transition: box-shadow 0.3s ease;
+}
+.chess-board-wrapper:hover {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 30px rgba(99,102,241,0.18);
+}
+
+/* ── أزرار التحكم (ctrl-btn) — Foundation style ── */
+.ctrl-btn {
+    background: rgba(99,102,241,0.1);
+    border: 1px solid rgba(99,102,241,0.22);
+    color: #e2e8f0;
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.25s, border-color 0.25s, transform 0.2s, box-shadow 0.25s;
+}
+.ctrl-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.55s ease;
+    pointer-events: none;
+}
+.ctrl-btn:hover::before { transform: translateX(100%); }
+.ctrl-btn:hover {
+    background: rgba(99,102,241,0.22);
+    border-color: rgba(99,102,241,0.45);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(99,102,241,0.22);
+    color: #fff;
+}
+.ctrl-btn:active { transform: translateY(0); }
+
+.ctrl-btn.primary {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border-color: #6366f1;
+    color: #fff;
+}
+.ctrl-btn.primary:hover {
+    background: linear-gradient(135deg, #7c3aed, #a78bfa);
+    border-color: #7c3aed;
+    box-shadow: 0 6px 20px rgba(99,102,241,0.35);
+}
+.ctrl-btn.danger {
+    background: rgba(239,68,68,0.1);
+    border-color: rgba(239,68,68,0.28);
+    color: #fca5a5;
+}
+.ctrl-btn.danger:hover {
+    background: rgba(239,68,68,0.2);
+    border-color: #ef4444;
+    color: #fecaca;
+    box-shadow: 0 4px 14px rgba(239,68,68,0.2);
+    transform: translateY(-2px);
+}
+
+/* ── زر النصيحة — Foundation accent style ── */
+.advice-btn {
+    background: linear-gradient(135deg, #f59e0b, #ec4899);
+    border: 1px solid #f59e0b;
+    color: #fff;
+    font-weight: 700;
+    position: relative;
+    overflow: hidden;
+    transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.advice-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.55s ease;
+    pointer-events: none;
+}
+.advice-btn:hover::before { transform: translateX(100%); }
+.advice-btn:hover {
+    opacity: 0.92;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(245,158,11,0.35);
+}
+
+/* ── صندوق النصيحة ── */
+.advice-box {
+    background: linear-gradient(135deg, rgba(99,102,241,0.06), rgba(139,92,246,0.06));
+    border: 1px solid rgba(99,102,241,0.2);
+    border-radius: var(--radius-sm);
+}
+
+/* ── أزرار الصعوبة ── */
+.diff-btn {
+    background: rgba(99,102,241,0.06);
+    border-color: rgba(99,102,241,0.2);
+    color: rgba(255,255,255,0.6);
+    transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s;
+}
+.diff-btn.active,
+.diff-btn:hover {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border-color: #6366f1;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+/* ── نافذة نهاية اللعبة — Foundation modal style ── */
+.gameover-modal {
+    background: rgba(0,0,0,0.88);
+    backdrop-filter: blur(10px);
+    animation: chessModalFadeIn 0.3s ease-out;
+}
+
+.gameover-card {
+    background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.12));
+    border: 2px solid rgba(99,102,241,0.32);
+    box-shadow: 0 0 50px rgba(99,102,241,0.22), 0 20px 60px rgba(0,0,0,0.4);
+    backdrop-filter: blur(20px);
+    animation: chessModalSlideUp 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+#gameover-icon {
+    font-size: 4rem;
+    animation: chessIconBounce 0.6s ease-out;
+    display: block;
+}
+
+#gameover-title {
+    font-size: 1.7rem;
+    background: linear-gradient(135deg, #e2e8f0, #a5b4fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+#gameover-msg {
+    color: rgba(255,255,255,0.7);
+}
+
+.gameover-actions {
+    margin-top: 4px;
+    gap: 10px;
+}
+.gameover-actions .ctrl-btn { flex: 1; }
+
+/* ── Online: غرفة اللعب ── */
+.online-room-box {
+    background: linear-gradient(135deg, rgba(99,102,241,0.06), rgba(139,92,246,0.06));
+    border: 1px solid rgba(99,102,241,0.2);
+    border-radius: var(--radius-sm);
+    transition: border-color 0.3s;
+}
+.online-room-box:hover { border-color: rgba(99,102,241,0.35); }
+.online-room-box h3 {
+    color: rgba(255,255,255,0.55);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border-bottom: 1px solid rgba(99,102,241,0.2);
+    padding-bottom: 8px;
+}
+
+/* ── صفحة اختيار الوضع ── */
+.chess-mode-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.chess-mode-card:hover {
+    box-shadow: 0 0 0 1px rgba(99,102,241,0.5), 0 12px 35px rgba(99,102,241,0.2);
+}
+
+/* ── Online Chess: nav-header (no definition found — add Foundation style) ── */
+.nav-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--header-height);
+    z-index: 100;
+    background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.1));
+    border-bottom: 1px solid rgba(99,102,241,0.22);
+    backdrop-filter: blur(14px);
+}
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+}
+.nav-brand {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #a5b4fc;
+    text-decoration: none;
+}
+
+/* online.html needs padding-top for the fixed nav */
+.chess-main {
+    padding-top: calc(var(--header-height) + 8px);
+}
+
+
+/* ============================================
+   CHESS ENHANCEMENTS 2026 — Glassmorphism & Neon
+   ============================================ */
+
+/* تحسين صفحة الاختيار */
+.chess-select-hero {
+    position: relative;
+}
+
+.chess-hero-icon {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* تحسين بطاقات الوضع */
+.chess-mode-card {
+    background: rgba(19, 27, 46, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.chess-mode-card:hover {
+    border-color: rgba(99, 102, 241, 0.5);
+    box-shadow: 0 8px 32px rgba(99, 102, 241, 0.2);
+    transform: translateY(-6px);
+}
+
+.mode-icon {
+    filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.5));
+}
+
+/* تحسين الرقعة */
+.chess-board-container {
+    background: rgba(19, 27, 46, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 20px rgba(99, 102, 241, 0.1);
+}
+
+/* تحسين القطع */
+.piece {
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+    transition: transform 0.15s ease;
+}
+
+.piece:hover {
+    transform: scale(1.1);
+}
+
+/* تحسين الإضاءة */
+.square.light {
+    background: linear-gradient(135deg, #e8d5b7, #d4c4a8);
+}
+
+.square.dark {
+    background: linear-gradient(135deg, #7a9e7e, #6b8f71);
+}
+
+/* تحسين المربعات المحددة */
+.square.selected {
+    box-shadow: inset 0 0 15px rgba(99, 102, 241, 0.6);
+}
+
+.square.last-move {
+    box-shadow: inset 0 0 10px rgba(245, 158, 11, 0.4);
+}
+
+/* تحسين التلميحات */
+.hint-dot {
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.6), rgba(99, 102, 241, 0.2));
+    box-shadow: 0 0 8px rgba(99, 102, 241, 0.4);
+}
+
+/* تحسين الشريط الجانبي */
+.chess-sidebar {
+    background: rgba(19, 27, 46, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+}
+
+.player-bar {
+    background: rgba(10, 14, 26, 0.8);
+    border: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+.player-bar.active {
+    border-color: rgba(99, 102, 241, 0.4);
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.15);
+}
+
+/* تحسين سجل الحركات */
+.move-history {
+    background: rgba(10, 14, 26, 0.6);
+    border: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+.move-entry {
+    transition: background 0.2s ease;
+}
+
+.move-entry:hover {
+    background: rgba(99, 102, 241, 0.1);
+}
+
+/* تحسين أزرار التحكم */
+.control-btn {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(99, 102, 241, 0.1));
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    transition: all 0.3s ease;
+}
+
+.control-btn:hover {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.4), rgba(99, 102, 241, 0.2));
+    border-color: rgba(99, 102, 241, 0.5);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    transform: translateY(-2px);
+}
+
+/* تحسين زر التراجع */
+.undo-btn {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1));
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.undo-btn:hover {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.4), rgba(239, 68, 68, 0.2));
+    border-color: rgba(239, 68, 68, 0.5);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+/* تحسين الترويسة */
+.chess-header {
+    background: rgba(10, 14, 26, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+    padding: 12px 20px;
+    border-radius: 0 0 var(--radius) var(--radius);
+    margin-bottom: 16px;
+}
+
+/* تحسين الترويسة في صفحة اللعب */
+.game-header {
+    background: rgba(10, 14, 26, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+}
+
+/* تحسين للجوال */
+@media (max-width: 767px) {
+    .chess-page {
+        padding: 0.5rem;
+    }
+
+    .chess-modes-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .chess-mode-card {
+        padding: 20px 16px;
+    }
+
+    .mode-icon {
+        font-size: 2.2rem;
+    }
+
+    .chess-mode-card h2 {
+        font-size: 1.1rem;
+    }
+
+    .chess-main {
+        gap: 8px;
+        padding: 0 0 1rem;
+    }
+
+    .chess-board-container {
+        border-radius: var(--radius-sm);
+    }
+
+    .chess-sidebar {
+        border-radius: var(--radius-sm);
+        padding: 10px;
+    }
+
+    .player-bar {
+        padding: 6px 10px;
+    }
+
+    .move-history {
+        max-height: 120px;
+    }
+
+    .control-bar {
+        gap: 6px;
+    }
+
+    .control-btn {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+}
+
+/* تحسينات للشاشات الصغيرة جداً */
+@media (max-width: 380px) {
+    .chess-select-hero h1 {
+        font-size: 1.8rem;
+    }
+
+    .chess-hero-icon {
+        font-size: 3.5rem;
+    }
+
+    .mode-icon {
+        font-size: 1.8rem;
+    }
+
+    .chess-mode-card {
+        padding: 16px 12px;
+    }
+}

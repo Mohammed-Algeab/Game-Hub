@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Hub - جاري تسجيل الدخول...</title>
+
+    <!-- ✅ الإصلاح الرئيسي: تحميل إعدادات Supabase أولاً -->
+    <script src="../js/app/gamehub-init.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e1a;
+            color: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(99, 102, 241, 0.2);
+            border-top-color: #6366f1;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        h2 { color: #818cf8; }
+        p { color: #94a3b8; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="loader"></div>
+    <h2>جاري تسجيل الدخول...</h2>
+    <p id="status-msg">سيتم توجيهك تلقائياً</p>
+
+    <script type="module">
+        import { getSupabase } from '../foundation/supabase-config.js';
+
+        async function handleCallback() {
+            try {
+                const supabase = await getSupabase();
+
+                if (!supabase) {
+                    console.error('[Callback] فشل تهيئة Supabase - تحقق من gamehub-init.js');
+                    setTimeout(() => { window.location.href = '../index.html'; }, 2000);
+                    return;
+                }
+
+                // Supabase يتعامل مع PKCE code تلقائياً بسبب detectSessionInUrl: true
+                const { data: { session }, error } = await supabase.auth.getSession();
+
+                if (error) {
+                    console.error('[Callback] خطأ في الجلسة:', error.message);
+                }
+
+                if (session) {
+                    console.log('[Callback] ✅ تسجيل دخول ناجح:', session.user.email || session.user.id);
+                } else {
+                    console.warn('[Callback] لم يتم إنشاء جلسة');
+                }
+
+            } catch (err) {
+                console.error('[Callback] خطأ غير متوقع:', err);
+            } finally {
+                window.location.href = '../index.html';
+            }
+        }
+
+        handleCallback();
+    </script>
+</body>
+</html>

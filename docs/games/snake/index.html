@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ثعبان — Game Hub</title>
+<link rel="stylesheet" href="../../css/main.css">
+<link rel="stylesheet" href="../../css/navigation.css">
+<link rel="stylesheet" href="../../css/svg-icons.css">
+<link rel="stylesheet" href="../../css/snake.css">
+<link rel="stylesheet" href="../../css/chat.css">
+    <link rel="stylesheet" href="../../css/chat-tabs.css">
+<script src="../../js/app/gamehub-init.js"></script>
+</head>
+<body class="has-game-controls">
+
+<header class="main-header">
+    <a href="../../index.html" class="logo"><span class="logo-icon-wrap"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 12h4m-2-2v4"/><circle cx="16" cy="11" r="1" fill="currentColor"/><circle cx="19" cy="13" r="1" fill="currentColor"/></svg></span></span><span>Game Hub</span></a>
+    <nav class="main-nav">
+        <a href="../../index.html" class="nav-link">الرئيسية</a>
+        <a href="../../about.html" class="nav-link">حول</a>
+        <a href="../../support.html" class="nav-link">الدعم</a>
+    </nav>
+    <button class="header-profile" type="button" id="header-profile-btn" aria-label="الملف الشخصي">
+        <span class="profile-avatar"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span></span><span class="profile-label">دخول</span>
+    </button>
+</header>
+
+<div class="game-page-snake">
+    <div class="game-header-snake">
+        <h1><span class="gh-icon gh-icon-md"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16v-3a4 4 0 014-4h8a4 4 0 004-4V4"/><path d="M4 16a2 2 0 104 0 2 2 0 00-4 0z" fill="currentColor" stroke="none"/><circle cx="20" cy="4" r="1.5" fill="currentColor" stroke="none"/></svg></span> ثعبان</h1>
+        <a href="../../index.html" class="back-btn"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></span> العودة</a>
+    </div>
+
+    <div class="game-info-snake">
+        <div class="score-box-snake">
+            <div class="score-label-snake">النقاط</div>
+            <div class="score-value-snake" id="score-value">0</div>
+        </div>
+        <div class="score-box-snake">
+            <div class="score-label-snake">أفضل</div>
+            <div class="score-value-snake" id="best-score">0</div>
+        </div>
+        <div class="score-box-snake">
+            <div class="score-label-snake">المستوى</div>
+            <div class="score-value-snake" id="level-value">1</div>
+        </div>
+        <button class="new-game-btn-snake" id="new-game-btn"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg></span> جديد</button>
+    </div>
+
+    <div class="board-container-snake">
+        <canvas id="snake-canvas"></canvas>
+        <div class="game-overlay" id="game-overlay">
+            <div class="overlay-content">
+                <h2><span class="gh-icon gh-icon-md"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16v-3a4 4 0 014-4h8a4 4 0 004-4V4"/><path d="M4 16a2 2 0 104 0 2 2 0 00-4 0z" fill="currentColor" stroke="none"/><circle cx="20" cy="4" r="1.5" fill="currentColor" stroke="none"/></svg></span> ثعبان</h2>
+                <p>اضغط أي مفتاح أو انقر للبدء</p>
+                <div class="controls-hint">
+                    <span>▲▼◀▶</span>
+                    <small>الأسهم للتحكم</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mobile-controls-snake" id="mobile-controls">
+        <div class="dpad">
+            <button class="dpad-btn dpad-up" data-dir="up">⬆️</button>
+            <div class="dpad-mid">
+                <button class="dpad-btn dpad-left" data-dir="right">➡️</button>
+                <button class="dpad-btn dpad-center">●</button>
+                <button class="dpad-btn dpad-right" data-dir="left">⬅️</button>
+            </div>
+            <button class="dpad-btn dpad-down" data-dir="down">⬇️</button>
+        </div>
+    </div>
+</div>
+
+<div class="gameover-overlay-snake" id="gameover-overlay" style="display:none;">
+    <div class="win-card-snake">
+        <h2>💔 انتهت اللعبة</h2>
+        <p>صدمت الثعبان!</p>
+        <div class="win-stats-snake">
+            <div><span id="gameover-score">0</span><small>النقاط</small></div>
+            <div><span id="gameover-level">1</span><small>المستوى</small></div>
+        </div>
+        <button class="new-game-btn-snake" id="gameover-new-game"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg></span> حاول مجدداً</button>
+    </div>
+</div>
+
+<script src="../../js/main.js"></script>
+<script type="module">
+    import { initGameHub } from '../../foundation/gamehub-api.js';
+    import { profileUI } from '../../foundation/profile-ui.js';
+    
+    await initGameHub();
+    profileUI.init();
+    
+    const headerProfileBtn = document.getElementById('header-profile-btn');
+    if (headerProfileBtn) {
+        headerProfileBtn.addEventListener('click', () => profileUI.open('profile'));
+    }
+</script>
+<script type="module">
+    import { SnakeGame }   from './game.js';
+    import { gameManager } from '../../foundation/game-manager.js';
+
+    const foundation = gameManager.initGame({
+        name:       'Snake',
+        storageKey: 'gamehub-snake-state',
+        hasScore:   true,
+        hasTimer:   false,
+        onRestart:  () => window.snakeGame?._init(),
+        onPause:    () => { if (window.snakeGame) window.snakeGame.isPaused = true;  },
+        onResume:   () => { if (window.snakeGame) window.snakeGame.isPaused = false; },
+    });
+
+    window.snakeGame = new SnakeGame(foundation);
+</script>
+</body>
+</html>

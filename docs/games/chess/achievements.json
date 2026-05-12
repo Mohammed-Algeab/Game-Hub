@@ -1,0 +1,79 @@
+[
+  {
+    "id": "chess_first_win",
+    "name": "أول فوز",
+    "description": "افوز في أول مباراة شطرنج",
+    "icon": "♟️",
+    "tier": "bronze",
+    "xp_reward": 25,
+    "condition_type": "wins",
+    "condition_value": 1,
+    "display_order": 1
+  },
+  {
+    "id": "chess_wins_10",
+    "name": "مبتدئ الشطرنج",
+    "description": "افوز في 10 مباريات شطرنج",
+    "icon": "♟️",
+    "tier": "bronze",
+    "xp_reward": 50,
+    "condition_type": "wins",
+    "condition_value": 10,
+    "display_order": 2
+  },
+  {
+    "id": "chess_wins_50",
+    "name": "ممارس الشطرنج",
+    "description": "افوز في 50 مباراة شطرنج",
+    "icon": "♚",
+    "tier": "silver",
+    "xp_reward": 100,
+    "condition_type": "wins",
+    "condition_value": 50,
+    "display_order": 3
+  },
+  {
+    "id": "chess_wins_100",
+    "name": "محترف الشطرنج",
+    "description": "افوز في 100 مباراة شطرنج",
+    "icon": "♛",
+    "tier": "gold",
+    "xp_reward": 200,
+    "condition_type": "wins",
+    "condition_value": 100,
+    "display_order": 4
+  },
+  {
+    "id": "chess_wins_500",
+    "name": "أسطورة الشطرنج",
+    "description": "افوز في 500 مباراة شطرنج",
+    "icon": "👑",
+    "tier": "platinum",
+    "xp_reward": 500,
+    "condition_type": "wins",
+    "condition_value": 500,
+    "display_order": 5
+  },
+  {
+    "id": "chess_streak_5",
+    "name": "سلسلة انتصارات",
+    "description": "افوز 5 مباريات متتالية",
+    "icon": "🔥",
+    "tier": "silver",
+    "xp_reward": 100,
+    "condition_type": "win_streak",
+    "condition_value": 5,
+    "display_order": 6
+  },
+  {
+    "id": "chess_streak_10",
+    "name": "لا يُقهر",
+    "description": "افوز 10 مباريات متتالية",
+    "icon": "⚡",
+    "tier": "gold",
+    "xp_reward": 250,
+    "condition_type": "win_streak",
+    "condition_value": 10,
+    "display_order": 7
+  }
+]

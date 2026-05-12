@@ -1,0 +1,83 @@
+[
+  {
+    "id": "sudoku_first_win",
+    "name": "أول حل",
+    "description": "حل أول لغز سودوكو",
+    "icon": "🔢",
+    "tier": "bronze",
+    "xp_reward": 25,
+    "condition_type": "wins",
+    "condition_value": 1,
+    "display_order": 1
+  },
+  {
+    "id": "sudoku_easy_10",
+    "name": "محلل مبتدئ",
+    "description": "حل 10 ألغاز سهلة",
+    "icon": "🟢",
+    "tier": "bronze",
+    "xp_reward": 30,
+    "condition_type": "wins_by_difficulty",
+    "condition_value": 10,
+    "condition_extra": {"difficulty": "easy"},
+    "display_order": 2
+  },
+  {
+    "id": "sudoku_medium_10",
+    "name": "محلل متوسط",
+    "description": "حل 10 ألغاز متوسطة",
+    "icon": "🟡",
+    "tier": "silver",
+    "xp_reward": 60,
+    "condition_type": "wins_by_difficulty",
+    "condition_value": 10,
+    "condition_extra": {"difficulty": "medium"},
+    "display_order": 3
+  },
+  {
+    "id": "sudoku_hard_10",
+    "name": "محلل صعب",
+    "description": "حل 10 ألغاز صعبة",
+    "icon": "🔴",
+    "tier": "gold",
+    "xp_reward": 120,
+    "condition_type": "wins_by_difficulty",
+    "condition_value": 10,
+    "condition_extra": {"difficulty": "hard"},
+    "display_order": 4
+  },
+  {
+    "id": "sudoku_expert_10",
+    "name": "محلل خبير",
+    "description": "حل 10 ألغاز خبير",
+    "icon": "⭐",
+    "tier": "platinum",
+    "xp_reward": 250,
+    "condition_type": "wins_by_difficulty",
+    "condition_value": 10,
+    "condition_extra": {"difficulty": "expert"},
+    "display_order": 5
+  },
+  {
+    "id": "sudoku_speed_5min",
+    "name": "سريع اليد",
+    "description": "حل لغز في أقل من 5 دقائق",
+    "icon": "⏱️",
+    "tier": "silver",
+    "xp_reward": 75,
+    "condition_type": "time_seconds",
+    "condition_value": 300,
+    "display_order": 6
+  },
+  {
+    "id": "sudoku_total_50",
+    "name": "مدمن سودوكو",
+    "description": "حل 50 لغزاً إجمالاً",
+    "icon": "🧩",
+    "tier": "gold",
+    "xp_reward": 150,
+    "condition_type": "wins",
+    "condition_value": 50,
+    "display_order": 7
+  }
+]

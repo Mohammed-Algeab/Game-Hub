@@ -1,0 +1,18 @@
+{
+  "id": "tetris",
+  "name": "تتريس",
+  "nameEn": "Tetris",
+  "description": "كلاسيكية الألعاب! رتب القطع المتساقطة واملأ الصفوف لتحصل على نقاط.",
+  "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><rect x=\"2\" y=\"10\" width=\"5\" height=\"5\" rx=\"1.5\"/><rect x=\"7\" y=\"10\" width=\"5\" height=\"5\" rx=\"1.5\"/><rect x=\"12\" y=\"10\" width=\"5\" height=\"5\" rx=\"1.5\"/><rect x=\"12\" y=\"5\" width=\"5\" height=\"5\" rx=\"1.5\"/><rect x=\"17\" y=\"10\" width=\"5\" height=\"5\" rx=\"1.5\" opacity=\"0.35\"/></svg>",
+  "status": "available",
+  "url": "games/tetris/index.html",
+  "category": "arcade",
+  "categoryLabel": "آركيد",
+  "mobile": true,
+  "tags": [
+    "آركيد",
+    "كلاسيكية"
+  ],
+  "color": "#6366f1",
+  "categoryIcon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"14\" width=\"18\" height=\"7\" rx=\"3\"/><path d=\"M12 14V8\"/><circle cx=\"12\" cy=\"6\" r=\"2\"/><path d=\"M9 17h.01M15 17h.01\"/></svg>"
+}

@@ -1,0 +1,299 @@
+/* ============================================
+   Snake — Professional Dark Theme Game
+   تصميم احترافي بثيم داكن للعبة الثعبان
+   ============================================ */
+
+.game-page-snake {
+    min-height: 100svh;
+    padding-top: var(--header-height);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: radial-gradient(ellipse at top, rgba(245, 158, 11, 0.05) 0%, transparent 50%);
+}
+
+.game-header-snake {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    padding: 16px 20px;
+    flex-shrink: 0;
+}
+.game-header-snake .back-btn {
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-card);
+    color: var(--text);
+    font-size: 0.85rem;
+    border: 1px solid var(--border);
+    transition: var(--transition);
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 500;
+}
+.game-header-snake h1 {
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+}
+
+.game-info-snake {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 600px;
+    padding: 0 16px 12px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+}
+
+.score-box-snake {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 6px 14px;
+    text-align: center;
+    min-width: 70px;
+    transition: var(--transition);
+}
+
+.score-box-snake:hover {
+    border-color: #f59e0b;
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+}
+
+.score-label-snake {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+}
+
+.score-value-snake {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.new-game-btn-snake {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: inherit;
+}
+
+.new-game-btn-snake:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+}
+
+.board-container-snake {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    width: 100%;
+    max-width: 600px;
+    position: relative;
+}
+
+#snake-canvas {
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg), 0 0 30px rgba(245, 158, 11, 0.1);
+    max-width: 100%;
+    max-height: calc(100svh - var(--header-height) - 180px);
+}
+
+.game-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 14, 26, 0.9);
+    border-radius: var(--radius);
+    z-index: 10;
+}
+
+.overlay-content {
+    text-align: center;
+    padding: 20px;
+}
+
+.overlay-content h2 {
+    font-size: 2rem;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.overlay-content p {
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+.controls-hint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.controls-hint span {
+    font-size: 1.5rem;
+}
+
+.controls-hint small {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+/* D-Pad للجوال */
+.mobile-controls-snake {
+    padding: 12px 16px 20px;
+    flex-shrink: 0;
+    display: none;
+}
+
+.dpad {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.dpad-mid {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.dpad-btn {
+    width: 56px;
+    height: 56px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text);
+    border-radius: 14px;
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+.dpad-btn:active {
+    background: var(--primary);
+    border-color: var(--primary);
+    transform: scale(0.95);
+}
+
+.dpad-center {
+    width: 56px;
+    height: 56px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+/* Game Over Overlay */
+.gameover-overlay-snake {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    animation: fadeIn 0.3s ease;
+}
+
+.win-card-snake {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    text-align: center;
+    max-width: 320px;
+    width: 90%;
+    animation: slideUp 0.4s ease;
+    box-shadow: var(--shadow-lg);
+}
+
+.win-card-snake h2 {
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #ef4444, #f87171);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.win-card-snake p {
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+.win-stats-snake {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.win-stats-snake div {
+    text-align: center;
+}
+
+.win-stats-snake span {
+    display: block;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.win-stats-snake small {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .game-header-snake h1 { font-size: 1.2rem; }
+    .score-box-snake { padding: 4px 10px; min-width: 60px; }
+    .score-value-snake { font-size: 1rem; }
+    .dpad-btn { width: 48px; height: 48px; font-size: 1.2rem; border-radius: 12px; }
+    .dpad-center { width: 48px; height: 48px; }
+}

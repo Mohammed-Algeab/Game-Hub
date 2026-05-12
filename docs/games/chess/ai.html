@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>شطرنج ضد AI — Game Hub</title>
+<link rel="stylesheet" href="../../css/main.css">
+<link rel="stylesheet" href="../../css/navigation.css">
+<link rel="stylesheet" href="../../css/svg-icons.css">
+<link rel="stylesheet" href="../../css/chess.css">
+<link rel="stylesheet" href="../../css/chat.css">
+    <link rel="stylesheet" href="../../css/chat-tabs.css">
+<script src="../../js/app/gamehub-init.js"></script>
+</head>
+<body class="has-game-controls">
+
+<header class="main-header">
+    <a href="../../index.html" class="logo">
+        <span class="logo-icon-wrap"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 12h4m-2-2v4"/><circle cx="16" cy="11" r="1" fill="currentColor"/><circle cx="19" cy="13" r="1" fill="currentColor"/></svg></span></span>
+        <span>Game Hub</span>
+    </a>
+    <nav class="main-nav">
+        <a href="../../index.html" class="nav-link">الرئيسية</a>
+        <a href="../../about.html" class="nav-link">حول</a>
+        <a href="../../support.html" class="nav-link">الدعم</a>
+    </nav>
+    <button class="header-profile" type="button" id="header-profile-btn" aria-label="الملف الشخصي">
+        <span class="profile-avatar"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span></span>
+        <span class="profile-label">دخول</span>
+    </button>
+</header>
+
+<div class="chess-page">
+    <div class="chess-header">
+        <h1><span class="gh-icon gh-icon-md"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20v-2h10v2"/><path d="M7 18c0 0 .5-2 2-3l1-4c-1 0-2-1-2-2s1-2 2-2h4c1 0 2 1 2 2s-1 2-2 2l1 4c1.5 1 2 3 2 3"/><line x1="7" y1="20" x2="17" y2="20"/><path d="M9 7V5h2V4h2v1h2v2"/></svg></span> شطرنج ضد AI</h1>
+        <a href="index.html" class="back-btn"><span class="gh-icon gh-icon-sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> القائمة</a>
+    </div>
+
+    <main class="chess-main">
+        <div class="chess-status">
+            <span id="status-text">دورك ♙</span>
+        </div>
+
+        <div class="chess-layout">
+            <div class="chess-board-wrapper">
+                <canvas id="chess-canvas"></canvas>
+                <div id="promotion-dialog" class="promotion-dialog hidden">
+                    <p>اختر قطعة الترقية</p>
+                    <div class="promotion-choices">
+                        <button class="prom-btn" data-type="q">♕</button>
+                        <button class="prom-btn" data-type="r">♖</button>
+                        <button class="prom-btn" data-type="b">♗</button>
+                        <button class="prom-btn" data-type="n">♘</button>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="chess-sidebar">
+                <div class="chess-difficulty">
+                    <h3>مستوى الصعوبة</h3>
+                    <div class="difficulty-btns">
+                        <button class="diff-btn" data-level="easy">سهل</button>
+                        <button class="diff-btn active" data-level="medium">متوسط</button>
+                        <button class="diff-btn" data-level="hard">صعب</button>
+                        <button class="diff-btn" data-level="expert">خبير</button>
+                    </div>
+                </div>
+
+                <button id="btn-advice" class="advice-btn"><span class="gh-icon gh-icon-sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="4"/><path d="M5 12a7 7 0 1114 0 7 7 0 00-4 6H9a7 7 0 01-4-6z"/><line x1="9" y1="21" x2="15" y2="21"/></svg></span> اطلب نصيحة</button>
+                <div id="advice-box" class="advice-box hidden"></div>
+
+                <div class="chess-history-box">
+                    <h3>سجل الحركات</h3>
+                    <div id="move-list" class="move-list"></div>
+                </div>
+
+                <div class="chess-controls">
+                    <button id="btn-restart" class="ctrl-btn danger">↺ إعادة</button>
+                    <a href="index.html" class="ctrl-btn"><span class="gh-icon gh-icon-sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> القائمة</a>
+                </div>
+            </aside>
+        </div>
+    </main>
+</div>
+
+<div id="gameover-modal" class="gameover-modal hidden">
+    <div class="gameover-card">
+        <div id="gameover-icon"><span class="gh-icon gh-icon-2xl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8m-4-4v4"/><path d="M6 3h12v8a6 6 0 01-12 0V3z"/><path d="M6 7H3a1 1 0 00-1 1v2a4 4 0 004 4m12-7h3a1 1 0 011 1v2a4 4 0 01-4 4"/></svg></span></div>
+        <h2 id="gameover-title"></h2>
+        <p id="gameover-msg"></p>
+        <div class="gameover-actions">
+            <button id="gameover-restart" class="ctrl-btn primary">↺ لعبة جديدة</button>
+            <a href="index.html" class="ctrl-btn"><span class="gh-icon gh-icon-sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> القائمة</a>
+        </div>
+    </div>
+</div>
+
+<script src="../../js/main.js"></script>
+<script type="module">
+    import { initGameHub } from '../../foundation/gamehub-api.js';
+    import { profileUI } from '../../foundation/profile-ui.js';
+    
+    await initGameHub();
+    profileUI.init();
+    
+    const headerProfileBtn = document.getElementById('header-profile-btn');
+    if (headerProfileBtn) {
+        headerProfileBtn.addEventListener('click', () => profileUI.open('profile'));
+    }
+</script>
+<script type="module">
+    import { ChessRenderer } from './ui/renderer.js';
+    import { AIController } from './ai/ai-controller.js';
+    import { getDefaultAIEndpoint } from '../../js/app/config.js';
+    import { gameManager } from '../../foundation/game-manager.js';
+
+    class ChessAIGame {
+        constructor(gameFoundation) {
+            this.gameFoundation = gameFoundation;
+            this.canvas = document.getElementById('chess-canvas');
+            this.statusEl = document.getElementById('status-text');
+            this.moveListEl = document.getElementById('move-list');
+            this.renderer = new ChessRenderer(this.canvas);
+            this.difficulty = 'medium';
+
+            this.ctrl = new AIController({
+                canvas: this.canvas,
+                renderer: this.renderer,
+                ui: { statusEl: this.statusEl, moveListEl: this.moveListEl },
+                difficulty: this.difficulty,
+                endpoint: getDefaultAIEndpoint(),
+                onGameOver: (status, winner) => { this.gameFoundation.showGameOver({ title: this.getGameOverTitle(status, winner), message: this.getGameOverMessage(status), icon: this.getGameOverIcon(status, winner) }); },
+                onStateChange: (fen) => {
+                    this.gameFoundation.updateAIContext({ event: 'chess_move', fen: fen });
+                },
+            });
+            this.gameFoundation.updateAIContext({ event: 'game_start', fen: this.ctrl.currentFEN });
+        }
+
+        getGameOverTitle(status, winner) {
+            const map = {
+                checkmate: winner === 'w' ? 'فزت! أحسنت!' : 'فاز AI',
+                stalemate: 'تعادل — وقفة',
+                insufficient: 'تعادل',
+                'fifty-move': 'تعادل',
+            };
+            return map[status] ?? 'انتهت اللعبة';
+        }
+
+        getGameOverMessage(status) {
+            const map = {
+                checkmate: 'كش مات!',
+                stalemate: 'لا حركات ممكنة',
+                insufficient: 'قطع غير كافية',
+                'fifty-move': 'قاعدة الخمسين حركة',
+            };
+            return map[status] ?? '';
+        }
+
+        getGameOverIcon(status, winner) {
+            const map = {
+                checkmate: winner === 'w' ? '<span class="gh-icon gh-icon-2xl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8m-4-4v4"/><path d="M6 3h12v8a6 6 0 01-12 0V3z"/><path d="M6 7H3a1 1 0 00-1 1v2a4 4 0 004 4m12-7h3a1 1 0 011 1v2a4 4 0 01-4 4"/></svg></span>' : '<span class="gh-icon gh-icon-2xl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="12" rx="3"/><path d="M9 9V7a3 3 0 016 0v2"/><circle cx="9" cy="14" r="1.5" fill="currentColor"/><circle cx="15" cy="14" r="1.5" fill="currentColor"/><path d="M9 18h6"/><path d="M12 3v2"/></svg></span>',
+                stalemate: '<span class="gh-icon gh-icon-2xl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.42 4.58a5.4 5.4 0 00-7.65 0l-.77.78-.77-.78a5.4 5.4 0 00-7.65 7.65l8.42 8.42 8.42-8.42a5.4 5.4 0 000-7.65z" stroke-dasharray="0"/><path d="M3 7l4 4m10-4l-4 4m-3-3l2 2"/></svg></span>',
+                insufficient: '<span class="gh-icon gh-icon-2xl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.42 4.58a5.4 5.4 0 00-7.65 0l-.77.78-.77-.78a5.4 5.4 0 00-7.65 7.65l8.42 8.42 8.42-8.42a5.4 5.4 0 000-7.65z" stroke-dasharray="0"/><path d="M3 7l4 4m10-4l-4 4m-3-3l2 2"/></svg></span>',
+                'fifty-move': '<span class="gh-icon gh-icon-2xl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.42 4.58a5.4 5.4 0 00-7.65 0l-.77.78-.77-.78a5.4 5.4 0 00-7.65 7.65l8.42 8.42 8.42-8.42a5.4 5.4 0 000-7.65z" stroke-dasharray="0"/><path d="M3 7l4 4m10-4l-4 4m-3-3l2 2"/></svg></span>',
+            };
+            return map[status] ?? '<span class="gh-icon gh-icon-2xl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20v-2h10v2"/><path d="M7 18c0 0 .5-2 2-3l1-4c-1 0-2-1-2-2s1-2 2-2h4c1 0 2 1 2 2s-1 2-2 2l1 4c1.5 1 2 3 2 3"/><line x1="7" y1="20" x2="17" y2="20"/><path d="M9 7V5h2V4h2v1h2v2"/></svg></span>';
+        }
+
+        setupEventListeners() {
+            document.getElementById('btn-restart').addEventListener('click', () => {
+                this.gameFoundation.hideGameOver();
+                this.ctrl.newGame();
+            });
+            document.getElementById('gameover-restart').addEventListener('click', () => {
+                this.gameFoundation.hideGameOver();
+                this.ctrl.newGame();
+            });
+
+            document.querySelectorAll('.diff-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    this.ctrl.setDifficulty(btn.dataset.level);
+                    this.ctrl.newGame();
+                });
+            });
+
+            document.getElementById('btn-advice').addEventListener('click', () => {
+                // This will be handled by GameFoundation
+                // this.gameFoundation._requestHint();
+            });
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const chessFoundation = gameManager.initGame({
+            name: 'Chess AI',
+            storageKey: 'chess-ai-state',
+            onRestart: () => {
+                if (window.chessAIGame) {
+                    window.chessAIGame.ctrl.newGame();
+                }
+            },
+            hasScore: false,
+            hasTimer: false,
+        });
+        window.chessAIGame = new ChessAIGame(chessFoundation);
+        window.chessAIGame.setupEventListeners();
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>2048 — Game Hub</title>
+<link rel="stylesheet" href="../../css/main.css">
+<link rel="stylesheet" href="../../css/navigation.css">
+<link rel="stylesheet" href="../../css/svg-icons.css">
+<link rel="stylesheet" href="../../css/2048.css">
+<link rel="stylesheet" href="../../css/chat.css">
+    <link rel="stylesheet" href="../../css/chat-tabs.css">
+<script src="../../js/app/gamehub-init.js"></script>
+</head>
+<body class="has-game-controls">
+
+<header class="main-header">
+    <a href="../../index.html" class="logo"><span class="logo-icon-wrap"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 12h4m-2-2v4"/><circle cx="16" cy="11" r="1" fill="currentColor"/><circle cx="19" cy="13" r="1" fill="currentColor"/></svg></span></span><span>Game Hub</span></a>
+    <nav class="main-nav">
+        <a href="../../index.html" class="nav-link">الرئيسية</a>
+        <a href="../../about.html" class="nav-link">حول</a>
+        <a href="../../support.html" class="nav-link">الدعم</a>
+    </nav>
+    <button class="header-profile" type="button" id="header-profile-btn" aria-label="الملف الشخصي">
+        <span class="profile-avatar"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span></span><span class="profile-label">دخول</span>
+    </button>
+</header>
+
+<div class="game-page-2048">
+    <div class="game-header-2048">
+        <h1><span class="gh-icon gh-icon-md"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="9" height="9" rx="2"/><rect x="13" y="2" width="9" height="9" rx="2"/><rect x="2" y="13" width="9" height="9" rx="2"/><rect x="13" y="13" width="9" height="9" rx="2"/><text x="3.5" y="9.5" font-size="5" fill="currentColor" stroke="none" font-family="monospace" font-weight="bold">2</text><text x="14.5" y="9.5" font-size="5" fill="currentColor" stroke="none" font-family="monospace" font-weight="bold">4</text><text x="3" y="20.5" font-size="5" fill="currentColor" stroke="none" font-family="monospace" font-weight="bold">8</text><text x="13" y="20.5" font-size="4" fill="currentColor" stroke="none" font-family="monospace" font-weight="bold">16</text></svg></span> 2048</h1>
+        <a href="../../index.html" class="back-btn"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></span> العودة</a>
+    </div>
+
+    <div class="game-info-2048">
+        <div class="score-box">
+            <div class="score-label">النقاط</div>
+            <div class="score-value" id="score-value">0</div>
+        </div>
+        <div class="score-box">
+            <div class="score-label">أفضل</div>
+            <div class="score-value" id="best-score">0</div>
+        </div>
+        <button class="new-game-btn" id="new-game-btn"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg></span> جديد</button>
+    </div>
+
+    <div class="board-container-2048">
+        <div class="grid-container" id="grid-container">
+            <div class="grid-bg">
+                <div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div>
+                <div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div>
+                <div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div>
+                <div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div>
+            </div>
+            <div class="tile-container" id="tile-container"></div>
+        </div>
+    </div>
+
+    <div class="controls-2048">
+        <p class="controls-text"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="14" width="18" height="7" rx="3"/><path d="M12 14V8"/><circle cx="12" cy="6" r="2"/><path d="M9 17h.01M15 17h.01"/></svg></span> استخدم الأسهم أو اسحب على الشاشة للتحرك</p>
+    </div>
+</div>
+
+<div class="win-overlay-2048" id="win-overlay" style="display:none;">
+    <div class="win-card-2048">
+        <h2>🎉 فزت!</h2>
+        <p>وصلت إلى 2048!</p>
+        <div class="win-stats-2048">
+            <div><span id="win-score">0</span><small>النقاط</small></div>
+        </div>
+        <button class="continue-btn" id="continue-btn">استمرار</button>
+        <button class="new-game-btn" id="win-new-game"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg></span> لعبة جديدة</button>
+    </div>
+</div>
+
+<div class="gameover-overlay-2048" id="gameover-overlay" style="display:none;">
+    <div class="win-card-2048">
+        <h2>💔 انتهت اللعبة</h2>
+        <p>لا يوجد حركات متاحة!</p>
+        <div class="win-stats-2048">
+            <div><span id="gameover-score">0</span><small>النقاط</small></div>
+        </div>
+        <button class="new-game-btn" id="gameover-new-game"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg></span> حاول مجدداً</button>
+    </div>
+</div>
+
+<script src="../../js/main.js"></script>
+<script type="module">
+    import { initGameHub } from '../../foundation/gamehub-api.js';
+    import { profileUI } from '../../foundation/profile-ui.js';
+    
+    await initGameHub();
+    profileUI.init();
+    
+    const headerProfileBtn = document.getElementById('header-profile-btn');
+    if (headerProfileBtn) {
+        headerProfileBtn.addEventListener('click', () => profileUI.open('profile'));
+    }
+</script>
+<script type="module">
+    import { Game2048 }    from './game.js';
+    import { gameManager } from '../../foundation/game-manager.js';
+
+    const foundation = gameManager.initGame({
+        name:       '2048',
+        storageKey: 'gamehub-2048-state',
+        hasScore:   true,
+        hasTimer:   false,
+        onRestart:  () => window.game2048?._init(),
+    });
+
+    window.game2048 = new Game2048(foundation);
+</script>
+</body>
+</html>

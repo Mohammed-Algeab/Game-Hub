@@ -1,0 +1,1044 @@
+/* ============================================
+   Sudoku — Full Viewport, No Scroll
+   ============================================ */
+
+/* ── Lock to viewport ── */
+.sudoku-page {
+    height: 100svh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding-top: var(--header-height);
+    box-sizing: border-box;
+    background: radial-gradient(ellipse at top, rgba(99, 102, 241, 0.03) 0%, transparent 50%);
+}
+
+/* ── Header strip ── */
+.sudoku-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 24px;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10, 14, 26, 0.5);
+}
+.sudoku-header .back-btn {
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-card);
+    color: var(--text);
+    font-size: 0.85rem;
+    border: 1px solid var(--border);
+    transition: var(--transition);
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 500;
+}
+.sudoku-header h1 {
+    font-size: 1.3rem;
+    background: linear-gradient(135deg, var(--primary-light), var(--primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+}
+
+/* ── Info bar ── */
+.sudoku-info {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    padding: 0 16px 6px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+}
+.info-chip {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+.info-chip span { color: var(--text); font-weight: 600; }
+
+/* ── Difficulty buttons ── */
+.difficulty-bar {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    padding: 0 16px 6px;
+    flex-shrink: 0;
+}
+.diff-btn {
+    padding: 4px 13px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-family: inherit;
+    transition: var(--transition);
+}
+.diff-btn.active, .diff-btn:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+/* ── Scrollable inner area ── */
+.sudoku-scroll {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 0 16px 12px;
+    /* Hide scrollbar but allow scrolling if absolutely needed */
+    scrollbar-width: none;
+}
+.sudoku-scroll::-webkit-scrollbar { display: none; }
+
+/* ── Desktop Layout: Horizontal with numpad on side ── */
+@media (min-width: 768px) {
+    .sudoku-scroll {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 20px;
+        padding: 12px 16px;
+    }
+}
+
+/* ── Grid sizing: fits inside the available space ──
+   Uses CSS min() to cap at: max-width, max-height, or 486px fixed max
+   Variable --grid-max-h is set inline by JS for precise fit
+   ── */
+.sudoku-grid {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 1px;
+    background: linear-gradient(135deg, var(--border), rgba(99, 102, 241, 0.2));
+    border: 2px solid var(--primary);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    /* Responsive: min of viewport width, computed height space, and max 486px */
+    width: min(
+        486px,
+        calc(100vw - 32px),
+        var(--sudoku-grid-size, 486px)
+    );
+    aspect-ratio: 1 / 1;
+    flex-shrink: 0;
+    direction: ltr;
+    box-shadow: var(--shadow-lg), 0 0 30px rgba(99, 102, 241, 0.06);
+}
+
+/* ── Desktop: Larger grid ── */
+@media (min-width: 768px) {
+    .sudoku-grid {
+        width: 540px;
+        height: 540px;
+    }
+}
+
+/* ── Cells ── */
+.sudoku-cell {
+    background: var(--bg-card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    font-size: clamp(0.8rem, 3vw, 1.3rem);
+    font-weight: 600;
+    transition: background 0.15s ease, transform 0.1s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    flex-direction: column;
+    aspect-ratio: 1;
+}
+
+.sudoku-cell:active {
+    transform: scale(0.92);
+}
+
+/* Box borders via JS-added classes */
+.sudoku-cell.box-right  { border-right:  2.5px solid var(--primary) !important; }
+.sudoku-cell.box-bottom { border-bottom: 2.5px solid var(--primary) !important; }
+
+/* States */
+.sudoku-cell.given   { color: var(--text); }
+.sudoku-cell.player  { color: var(--primary); }
+.sudoku-cell.error   { color: #ef4444 !important; background: rgba(239,68,68,0.1); }
+.sudoku-cell.hint    { color: #10b981 !important; }
+.sudoku-cell.selected   { background: rgba(99,102,241,0.28) !important; }
+.sudoku-cell.highlight  { background: rgba(99,102,241,0.09); }
+.sudoku-cell.same-num   { background: rgba(99,102,241,0.18); }
+
+@keyframes cellPop {
+    0%   { transform: scale(0.75); }
+    60%  { transform: scale(1.18); }
+    100% { transform: scale(1); }
+}
+.sudoku-cell.correct-anim { animation: cellPop 0.3s ease; }
+
+/* Notes grid inside cell */
+.cell-notes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: 100%;
+    height: 100%;
+    padding: 1px;
+}
+.note-digit {
+    font-size: clamp(0.3rem, 1vw, 0.5rem);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+}
+
+/* ── Number Pad ── */
+.sudoku-numpad {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    width: min(486px, calc(100vw - 32px), var(--sudoku-grid-size, 486px));
+    flex-shrink: 0;
+}
+
+/* ── Desktop: Vertical numpad on side ── */
+@media (min-width: 768px) {
+    .sudoku-numpad {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        width: auto;
+        max-width: 140px;
+        flex-shrink: 0;
+    }
+}
+.num-btn {
+    aspect-ratio: 1.2;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text);
+    font-size: clamp(0.95rem, 3.5vw, 1.3rem);
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+}
+.num-btn:hover, .num-btn:active {
+    background: var(--primary); border-color: var(--primary); color: #fff; transform: scale(0.95);
+}
+.num-btn.erase-btn  { font-size: 1.2rem; }
+.num-btn.note-btn   { font-size: 0.7rem; line-height: 1.3; }
+.num-btn.note-btn.active { background: rgba(99,102,241,0.2); border-color: var(--primary); color: var(--primary); }
+.num-btn.hint-btn  { font-size: 0.75rem; background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.4); color: #10b981; }
+.num-btn.hint-btn:hover { background: #10b981; color: #fff; }
+.num-btn.new-game-btn { font-size: 0.7rem; background: rgba(99,102,241,0.1); border-color: rgba(99,102,241,0.4); color: var(--primary); }
+.num-btn.new-game-btn:hover { background: var(--primary); color: #fff; }
+.num-btn.completed { opacity: 0.35; pointer-events: none; }
+
+/* ── AI Help Button ── */
+.game-ai-help-btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 10px 20px; border-radius: var(--radius);
+    border: 1px solid rgba(99,102,241,0.4);
+    background: rgba(99,102,241,0.1); color: var(--primary);
+    font-size: 0.95rem; font-weight: 600; cursor: pointer; font-family: inherit;
+    transition: var(--transition);
+    width: min(486px, calc(100vw - 32px), var(--sudoku-grid-size, 486px));
+    flex-shrink: 0;
+}
+
+/* ── Desktop: AI button positioning ── */
+@media (min-width: 768px) {
+    .game-ai-help-btn {
+        width: auto;
+        max-width: 140px;
+    }
+}
+.game-ai-help-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+.game-ai-help-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* ── Win Overlay ── */
+.sudoku-win-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.72);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 800; backdrop-filter: blur(4px);
+}
+.win-card {
+    background: linear-gradient(135deg, var(--bg-card), rgba(99, 102, 241, 0.05));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    text-align: center;
+    max-width: 320px;
+    width: 90%;
+    animation: winPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: var(--shadow-lg), 0 0 40px rgba(99, 102, 241, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+.win-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #ffd700, #ff8c00, #ffd700);
+    opacity: 0.8;
+}
+
+@keyframes winPop {
+    0% { transform: scale(0.5); opacity: 0; }
+    60% { transform: scale(1.05); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.win-card h2 {
+    font-size: 2rem;
+    background: linear-gradient(135deg, #ffd700, #ff8c00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.win-stats {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin: 20px 0;
+}
+
+.win-stat {
+    text-align: center;
+    padding: 10px 16px;
+    background: rgba(99, 102, 241, 0.08);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+}
+
+.win-stat span {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary-light), var(--primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.win-stat small {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.play-again-btn {
+    padding: 14px 32px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: var(--transition);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+.play-again-btn:hover {
+    background: linear-gradient(135deg, var(--primary-light), var(--primary));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(99, 102, 241, 0.45);
+}
+
+/* ── Mobile adjustments ── */
+@media (max-width: 767px) {
+    .sudoku-page { 
+        padding-top: 52px;
+        display: flex;
+        flex-direction: column;
+        height: 100svh;
+        overflow: hidden;
+    }
+    
+    .sudoku-header { 
+        padding: 4px 12px; 
+        flex-shrink: 0;
+    }
+    .sudoku-header h1 { 
+        font-size: 1rem; 
+    }
+    
+    .difficulty-bar { 
+        gap: 4px; 
+        padding: 0 12px 4px;
+        flex-shrink: 0;
+    }
+    .diff-btn { 
+        padding: 3px 10px; 
+        font-size: 0.75rem; 
+    }
+    
+    .sudoku-info { 
+        gap: 6px; 
+        padding: 0 12px 4px;
+        flex-shrink: 0;
+    }
+    .info-chip { 
+        padding: 3px 9px; 
+        font-size: 0.75rem; 
+    }
+    
+    .sudoku-scroll { 
+        gap: 6px; 
+        padding: 0 10px 10px; 
+        flex: 1;
+        overflow-y: auto;
+    }
+    
+    .sudoku-grid {
+        width: min(95vw, calc(100vw - 20px)) !important;
+    }
+    
+    .sudoku-numpad { 
+        gap: 4px;
+        width: min(95vw, calc(100vw - 20px)) !important;
+    }
+    
+    .num-btn {
+        aspect-ratio: 1;
+    }
+}
+
+/* ── Very small mobile (< 380px) ── */
+@media (max-width: 379px) {
+    .sudoku-header h1 { font-size: 0.9rem; }
+    .sudoku-info { gap: 4px; padding: 0 10px 2px; }
+    .info-chip { padding: 2px 7px; font-size: 0.7rem; }
+    .difficulty-bar { gap: 3px; padding: 0 10px 3px; }
+    .diff-btn { padding: 2px 8px; font-size: 0.7rem; }
+    .sudoku-scroll { gap: 4px; padding: 0 6px 8px; }
+    
+    .sudoku-grid {
+        width: min(90vw, calc(100vw - 12px)) !important;
+    }
+    
+    .sudoku-numpad {
+        width: min(90vw, calc(100vw - 12px)) !important;
+    }
+    
+    .sudoku-cell {
+        font-size: clamp(0.65rem, 2.5vw, 1.1rem);
+    }
+    
+    .num-btn {
+        font-size: clamp(0.8rem, 3vw, 1rem);
+    }
+}
+
+/* ── Landscape mobile ── */
+@media (max-height: 500px) {
+    .sudoku-page { 
+        padding-top: 48px;
+    }
+    
+    .sudoku-header { 
+        padding: 2px 10px;
+    }
+    .sudoku-header h1 { 
+        font-size: 0.85rem;
+    }
+    
+    .sudoku-info { 
+        gap: 4px;
+        padding: 0 10px 2px;
+    }
+    .info-chip { 
+        padding: 2px 7px;
+        font-size: 0.65rem;
+    }
+    
+    .difficulty-bar {
+        gap: 3px;
+        padding: 0 10px 2px;
+    }
+    .diff-btn {
+        padding: 2px 8px;
+        font-size: 0.65rem;
+    }
+    
+    .sudoku-scroll {
+        gap: 4px;
+        padding: 0 8px 8px;
+    }
+    
+    .sudoku-grid {
+        width: min(85vw, calc(100vw - 16px)) !important;
+    }
+    
+    .sudoku-numpad {
+        width: min(85vw, calc(100vw - 16px)) !important;
+        gap: 3px;
+    }
+    
+    .num-btn {
+        font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+    }
+    
+    .sudoku-cell {
+        font-size: clamp(0.6rem, 2vw, 0.9rem);
+    }
+}
+
+/* ── Win overlay mobile ── */
+@media (max-width: 767px) {
+    .win-card {
+        max-width: 90%;
+        padding: 20px;
+    }
+    .win-card h2 { font-size: 1.5rem; }
+    .win-stats { gap: 16px; margin: 12px 0; }
+    .win-stat span { font-size: 1.2rem; }
+    .win-stat small { font-size: 0.7rem; }
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   Foundation Visual Style — sudoku.css
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+@keyframes sudokuPageFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes sudokuModalSlideUp {
+    from { opacity: 0; transform: translateY(28px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes sudokuIconBounce {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-10px); }
+}
+@keyframes sudokuWinOverlayIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ── الصفحة ── */
+.sudoku-page {
+    animation: sudokuPageFadeIn 0.45s ease-out;
+}
+
+/* ── الهيدر — Foundation status bar style ── */
+.sudoku-header {
+    background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.12));
+    border-bottom: 1px solid rgba(99,102,241,0.25);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+
+.sudoku-header h1 {
+    font-size: 1.25rem;
+    background: linear-gradient(135deg, #a5b4fc, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ── شريط المعلومات ── */
+.sudoku-info {
+    padding: 8px 16px 4px;
+    gap: 10px;
+}
+
+.info-chip {
+    background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.08));
+    border: 1px solid rgba(99,102,241,0.22);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.6);
+    backdrop-filter: blur(6px);
+    transition: border-color 0.2s, background 0.2s;
+    gap: 6px;
+}
+.info-chip:hover {
+    border-color: rgba(99,102,241,0.4);
+    background: linear-gradient(135deg, rgba(99,102,241,0.14), rgba(139,92,246,0.12));
+}
+.info-chip span {
+    color: #a5b4fc;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ── أزرار الصعوبة ── */
+.difficulty-bar {
+    padding: 2px 16px 6px;
+}
+
+.diff-btn {
+    background: rgba(99,102,241,0.06);
+    border: 1px solid rgba(99,102,241,0.2);
+    color: rgba(255,255,255,0.55);
+    border-radius: 20px;
+    font-weight: 600;
+    transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+.diff-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+    pointer-events: none;
+}
+.diff-btn:hover::before { transform: translateX(100%); }
+.diff-btn.active,
+.diff-btn:hover {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border-color: #6366f1;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+}
+
+/* ── الشبكة ── */
+.sudoku-grid {
+    border: 2px solid rgba(99,102,241,0.5);
+    box-shadow: 0 0 40px rgba(99,102,241,0.1), 0 8px 30px rgba(0,0,0,0.25);
+    background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.12));
+}
+
+/* ── الأزرار في لوحة الأرقام ── */
+.num-btn {
+    position: relative;
+    overflow: hidden;
+    transition: background 0.2s, border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+.num-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+    pointer-events: none;
+}
+.num-btn:hover::before { transform: translateX(100%); }
+.num-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(99,102,241,0.25);
+}
+
+/* ── نافذة الفوز — Foundation modal style ── */
+.sudoku-win-overlay {
+    background: rgba(0,0,0,0.88) !important;
+    backdrop-filter: blur(10px);
+    animation: sudokuWinOverlayIn 0.3s ease-out;
+}
+
+.win-card {
+    background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.12));
+    border: 2px solid rgba(99,102,241,0.32);
+    box-shadow: 0 0 50px rgba(99,102,241,0.22), 0 20px 60px rgba(0,0,0,0.35);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    padding: 36px 40px;
+    animation: sudokuModalSlideUp 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.win-card h2 {
+    font-size: 2rem;
+    background: linear-gradient(135deg, #f9a8d4, #a5b4fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: sudokuIconBounce 0.6s ease-out;
+    display: inline-block;
+}
+
+.win-card p {
+    color: rgba(255,255,255,0.75);
+    font-size: 1rem;
+}
+
+.win-stat span {
+    color: #a5b4fc;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+/* ── زر لعبة جديدة ── */
+.play-again-btn {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border: 1px solid #6366f1;
+    color: #fff;
+    font-weight: 700;
+    border-radius: 10px;
+    padding: 12px 28px;
+    cursor: pointer;
+    font-size: 1rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.25s, transform 0.2s, box-shadow 0.25s;
+}
+.play-again-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.55s ease;
+    pointer-events: none;
+}
+.play-again-btn:hover::before { transform: translateX(100%); }
+.play-again-btn:hover {
+    background: linear-gradient(135deg, #7c3aed, #a78bfa);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(99,102,241,0.35);
+}
+.play-again-btn:active { transform: translateY(0); }
+
+/* ── زر قواعد AI (إذا وُجد) ── */
+#ai-help-container button,
+.ai-help-btn {
+    background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.1));
+    border: 1px solid rgba(99,102,241,0.25);
+    color: #a5b4fc;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: background 0.2s, transform 0.15s;
+}
+#ai-help-container button:hover,
+.ai-help-btn:hover {
+    background: linear-gradient(135deg, rgba(99,102,241,0.18), rgba(139,92,246,0.18));
+    transform: translateY(-1px);
+}
+
+
+/* ============================================
+   SUDOKU ENHANCEMENTS 2026 — Glassmorphism & Neon
+   ============================================ */
+
+/* تحسين الصفحة */
+.sudoku-page {
+    background: radial-gradient(ellipse at top, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom right, rgba(236, 72, 153, 0.03) 0%, transparent 50%);
+}
+
+/* تحسين الترويسة */
+.sudoku-header {
+    background: rgba(10, 14, 26, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.sudoku-header h1 {
+    background: linear-gradient(135deg, #818cf8, #6366f1, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
+}
+
+/* تحسين شريط المعلومات */
+.sudoku-info {
+    gap: 12px;
+    padding: 8px 16px 8px;
+}
+
+.info-chip {
+    background: rgba(19, 27, 46, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.info-chip:hover {
+    border-color: rgba(99, 102, 241, 0.4);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+}
+
+.info-chip span {
+    color: #818cf8;
+    font-weight: 700;
+}
+
+/* تحسين أزرار الصعوبة */
+.difficulty-bar {
+    gap: 8px;
+    padding: 4px 16px 8px;
+}
+
+.diff-btn {
+    background: rgba(19, 27, 46, 0.6);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    padding: 6px 16px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.diff-btn:hover {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+}
+
+.diff-btn.active {
+    background: linear-gradient(135deg, #6366f1, #818cf8);
+    border-color: #6366f1;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    color: #fff;
+    font-weight: 600;
+}
+
+/* تحسين الشبكة */
+.sudoku-grid {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15));
+    border: 2px solid rgba(99, 102, 241, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 30px rgba(99, 102, 241, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.sudoku-cell {
+    background: rgba(19, 27, 46, 0.5);
+    border: 1px solid rgba(99, 102, 241, 0.1);
+    transition: all 0.2s ease;
+}
+
+.sudoku-cell:hover {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: rgba(99, 102, 241, 0.3);
+}
+
+.sudoku-cell.selected {
+    background: rgba(99, 102, 241, 0.25);
+    border-color: rgba(99, 102, 241, 0.6);
+    box-shadow: inset 0 0 15px rgba(99, 102, 241, 0.3);
+}
+
+.sudoku-cell.highlighted {
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.sudoku-cell.same-number {
+    background: rgba(236, 72, 153, 0.15);
+    border-color: rgba(236, 72, 153, 0.3);
+}
+
+.sudoku-cell.fixed {
+    background: rgba(10, 14, 26, 0.8);
+    color: #818cf8;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(129, 140, 248, 0.3);
+}
+
+.sudoku-cell.error {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.5);
+    color: #f87171;
+    animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    75% { transform: translateX(3px); }
+}
+
+/* تحسين لوحة الأرقام */
+.sudoku-numpad {
+    gap: 8px;
+}
+
+.numpad-btn {
+    background: rgba(19, 27, 46, 0.7);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.numpad-btn:hover {
+    background: rgba(99, 102, 241, 0.3);
+    border-color: rgba(99, 102, 241, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.25);
+}
+
+.numpad-btn:active {
+    transform: scale(0.95);
+}
+
+.numpad-btn.note-mode {
+    background: rgba(245, 158, 11, 0.2);
+    border-color: rgba(245, 158, 11, 0.4);
+    color: #fbbf24;
+}
+
+.numpad-btn.note-mode:hover {
+    background: rgba(245, 158, 11, 0.3);
+    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.25);
+}
+
+/* تحسين شاشة الفوز */
+.sudoku-win-overlay {
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.win-card {
+    background: rgba(19, 27, 46, 0.9);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 40px rgba(99, 102, 241, 0.15);
+}
+
+.win-card h2 {
+    background: linear-gradient(135deg, #10b981, #34d399);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.win-stat span {
+    color: #818cf8;
+    text-shadow: 0 0 15px rgba(129, 140, 248, 0.4);
+}
+
+.play-again-btn {
+    background: linear-gradient(135deg, #6366f1, #818cf8);
+    border: none;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    transition: all 0.3s ease;
+}
+
+.play-again-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+}
+
+/* تحسين للجوال */
+@media (max-width: 767px) {
+    .sudoku-page {
+        padding-top: var(--header-height);
+    }
+
+    .sudoku-header {
+        padding: 8px 16px;
+    }
+
+    .sudoku-header h1 {
+        font-size: 1.1rem;
+    }
+
+    .sudoku-info {
+        gap: 6px;
+        padding: 4px 12px 4px;
+    }
+
+    .info-chip {
+        padding: 4px 10px;
+        font-size: 0.75rem;
+    }
+
+    .difficulty-bar {
+        gap: 4px;
+        padding: 2px 12px 6px;
+    }
+
+    .diff-btn {
+        padding: 4px 12px;
+        font-size: 0.75rem;
+    }
+
+    .sudoku-scroll {
+        padding: 0 12px 8px;
+        gap: 8px;
+    }
+
+    .sudoku-grid {
+        border-width: 1.5px;
+    }
+
+    .sudoku-cell {
+        font-size: 1.2rem;
+    }
+
+    .sudoku-numpad {
+        gap: 6px;
+    }
+
+    .numpad-btn {
+        font-size: 0.95rem;
+        border-radius: 10px;
+    }
+
+    .win-card {
+        padding: 20px;
+        margin: 16px;
+    }
+
+    .win-card h2 {
+        font-size: 1.4rem;
+    }
+}
+
+/* تحسينات للشاشات الصغيرة جداً */
+@media (max-width: 380px) {
+    .sudoku-cell {
+        font-size: 1rem;
+    }
+
+    .numpad-btn {
+        font-size: 0.85rem;
+    }
+
+    .info-chip {
+        padding: 3px 8px;
+        font-size: 0.7rem;
+    }
+}

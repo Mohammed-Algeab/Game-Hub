@@ -1,0 +1,79 @@
+[
+  {
+    "id": "snake_first_game",
+    "name": "أول زحف",
+    "description": "العب أول مباراة ثعبان",
+    "icon": "🐍",
+    "tier": "bronze",
+    "xp_reward": 10,
+    "condition_type": "games_played",
+    "condition_value": 1,
+    "display_order": 1
+  },
+  {
+    "id": "snake_score_100",
+    "name": "مائة نقطة",
+    "description": "احصل على 100 نقطة",
+    "icon": "🍎",
+    "tier": "bronze",
+    "xp_reward": 20,
+    "condition_type": "score",
+    "condition_value": 100,
+    "display_order": 2
+  },
+  {
+    "id": "snake_score_500",
+    "name": "خمسمائة",
+    "description": "احصل على 500 نقطة",
+    "icon": "🐍",
+    "tier": "silver",
+    "xp_reward": 50,
+    "condition_type": "score",
+    "condition_value": 500,
+    "display_order": 3
+  },
+  {
+    "id": "snake_score_1000",
+    "name": "ألف نقطة",
+    "description": "احصل على 1000 نقطة",
+    "icon": "🐉",
+    "tier": "gold",
+    "xp_reward": 100,
+    "condition_type": "score",
+    "condition_value": 1000,
+    "display_order": 4
+  },
+  {
+    "id": "snake_score_2000",
+    "name": "تنين الأساطير",
+    "description": "احصل على 2000 نقطة",
+    "icon": "🐲",
+    "tier": "platinum",
+    "xp_reward": 300,
+    "condition_type": "score",
+    "condition_value": 2000,
+    "display_order": 5
+  },
+  {
+    "id": "snake_length_30",
+    "name": "ثعبان طويل",
+    "description": "وصل لطول 30",
+    "icon": "📏",
+    "tier": "silver",
+    "xp_reward": 40,
+    "condition_type": "snake_length",
+    "condition_value": 30,
+    "display_order": 6
+  },
+  {
+    "id": "snake_level_10",
+    "name": "صائد محترف",
+    "description": "وصل للمستوى 10",
+    "icon": "🎖️",
+    "tier": "gold",
+    "xp_reward": 80,
+    "condition_type": "level",
+    "condition_value": 10,
+    "display_order": 7
+  }
+]

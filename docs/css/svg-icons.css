@@ -1,0 +1,277 @@
+/* ============================================
+   SVG Icons — Professional icon system for Game Hub
+   ============================================ */
+
+/* ─── Base icon wrapper ── */
+.gh-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.gh-icon svg {
+    width: 1em;
+    height: 1em;
+    display: block;
+}
+
+/* ─── Size variants ── */
+.gh-icon-xs  { font-size: 0.85rem; }
+.gh-icon-sm  { font-size: 1rem; }
+.gh-icon-md  { font-size: 1.25rem; }
+.gh-icon-lg  { font-size: 1.5rem; }
+.gh-icon-xl  { font-size: 2rem; }
+.gh-icon-2xl { font-size: 2.5rem; }
+.gh-icon-3xl { font-size: 3rem; }
+.gh-icon-4xl { font-size: 3.5rem; }
+.gh-icon-hero { font-size: 4rem; }
+
+/* ─── Logo icon ── */
+.logo-icon-wrap {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.2));
+    border: 1px solid rgba(99,102,241,0.35);
+    color: #818cf8;
+    flex-shrink: 0;
+    font-size: 1.25rem;
+}
+.logo-icon-wrap svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* ─── Bottom nav icon sizing ── */
+.bnav-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
+.bnav-icon .gh-icon { font-size: inherit; }
+
+/* ─── Profile avatar icon ── */
+.profile-avatar .gh-icon {
+    font-size: 0.95rem;
+    color: #818cf8;
+}
+
+/* ─── Game thumbnail icon ── */
+.game-thumbnail .gh-icon {
+    font-size: 2.2rem;
+    color: currentColor;
+}
+.game-thumbnail svg {
+    width: 2.4rem;
+    height: 2.4rem;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
+}
+
+/* ─── Category filter icon ── */
+.cat-icon .gh-icon { font-size: 1.1rem; }
+.drawer-icon .gh-icon { font-size: 1.1rem; }
+
+/* ─── Status dots ── */
+.status-online  { background: #10b981; box-shadow: 0 0 6px rgba(16,185,129,0.5); }
+.status-offline { background: #6b7280; }
+.status-playing { background: #6366f1; box-shadow: 0 0 6px rgba(99,102,241,0.5); }
+.status-away    { background: #f59e0b; box-shadow: 0 0 6px rgba(245,158,11,0.5); }
+
+/* ─── Profile status indicator ── */
+.profile-status-indicator {
+    position: absolute;
+    bottom: 2px; right: 2px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--bg-card, #131b2e);
+    z-index: 2;
+}
+
+/* ─── Chat status ── */
+.chat-status-online  { color: #10b981; }
+.chat-status-offline { color: #6b7280; }
+
+/* ─── Section title icon ── */
+.section-title .gh-icon,
+.section-title-icon {
+    color: var(--primary-light);
+    font-size: 1.15rem;
+    margin-inline-end: 6px;
+    vertical-align: -0.15em;
+}
+
+/* ─── About page hero icon ── */
+.about-hero .hero-icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px; height: 80px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.2));
+    border: 1px solid rgba(99,102,241,0.3);
+    color: #818cf8;
+    font-size: 2.6rem;
+    margin-bottom: 16px;
+}
+.about-hero .hero-icon-wrap svg {
+    width: 44px; height: 44px;
+}
+
+/* ─── Support hero icon ── */
+.support-hero .hero-icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px; height: 72px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(99,102,241,0.15));
+    border: 1px solid rgba(16,185,129,0.25);
+    color: #34d399;
+    font-size: 2.2rem;
+    margin-bottom: 12px;
+}
+.support-hero .hero-icon-wrap svg {
+    width: 40px; height: 40px;
+}
+
+/* ─── Roadmap badge icons ── */
+.roadmap-badge .gh-icon { font-size: 0.9em; vertical-align: -0.1em; }
+
+/* ─── Help card icon ── */
+.help-icon .gh-icon { font-size: 1.6rem; }
+
+/* ─── About card icon ── */
+.card-icon .gh-icon  { font-size: 1.75rem; }
+.game-emoji .gh-icon { font-size: 2rem; }
+
+/* ─── Form submit button icon ── */
+.submit-btn .gh-icon { font-size: 1em; }
+
+/* ─── Back button icon ── */
+.back-btn .gh-icon { font-size: 1em; }
+
+/* ─── Close button icon ── */
+.drawer-close .gh-icon { font-size: 0.9rem; }
+
+/* ─── Dropdown arrow ── */
+.dropdown-arrow .gh-icon { font-size: 0.75rem; color: var(--text-muted); }
+
+
+/* ── Hover & Transition Effects ── */
+.gh-icon svg {
+    transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1),
+                stroke 0.18s ease,
+                opacity 0.18s ease;
+}
+
+/* Nav items — subtle scale + colour shift */
+.bottom-nav-item:hover .gh-icon svg,
+.bottom-nav-item:focus .gh-icon svg {
+    transform: scale(1.18) translateY(-1px);
+}
+.bottom-nav-item.active .gh-icon svg {
+    stroke: var(--primary-light, #818cf8);
+    filter: drop-shadow(0 0 4px rgba(99,102,241,0.5));
+}
+
+/* Buttons with icons — lift */
+button:not(:disabled):hover .gh-icon svg,
+a:hover .gh-icon svg {
+    transform: scale(1.12);
+}
+
+/* Logo icon — spin-on-hover (subtle) */
+.logo:hover .gh-icon svg,
+.nav-brand:hover .gh-icon svg {
+    transform: rotate(-8deg) scale(1.08);
+}
+
+/* Chat float button — pulse ring */
+.chat-float-btn .gh-icon svg {
+    transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+}
+.chat-float-btn:hover .gh-icon svg {
+    transform: scale(1.2) rotate(-6deg);
+}
+.chat-float-btn:active .gh-icon svg {
+    transform: scale(0.92);
+}
+
+/* Profile avatar button */
+.header-profile:hover .gh-icon svg {
+    stroke: var(--primary-light, #818cf8);
+    transform: scale(1.15);
+}
+
+/* Game mode cards */
+.chess-mode-card:hover .gh-icon svg {
+    transform: scale(1.22) translateY(-2px);
+    transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+/* Category filter pills */
+.cat-filter-btn:hover .gh-icon svg {
+    transform: scale(1.15) rotate(-4deg);
+}
+.cat-filter-btn.active .gh-icon svg {
+    stroke: var(--primary-light, #818cf8);
+}
+
+/* Trash / destructive actions — shake on hover */
+@keyframes gh-shake {
+    0%, 100% { transform: rotate(0deg); }
+    25%       { transform: rotate(-8deg); }
+    75%       { transform: rotate(8deg); }
+}
+#chat-clear-btn:hover .gh-icon svg,
+.gh-btn-logout:hover .gh-icon svg {
+    animation: gh-shake 0.4s ease;
+}
+
+/* Profile modal tabs */
+.gh-tab:hover .gh-icon svg {
+    transform: scale(1.15);
+}
+.gh-tab.active .gh-icon svg {
+    stroke: var(--primary-light, #818cf8);
+}
+
+/* Back/arrow buttons — slide left */
+@keyframes gh-nudge-left {
+    0%   { transform: translateX(0); }
+    50%  { transform: translateX(-3px); }
+    100% { transform: translateX(0); }
+}
+.back-btn:hover .gh-icon svg,
+.private-back-btn:hover .gh-icon svg {
+    animation: gh-nudge-left 0.35s ease;
+}
+
+/* Send buttons — forward nudge */
+@keyframes gh-nudge-right {
+    0%   { transform: translateX(0); }
+    50%  { transform: translateX(3px); }
+    100% { transform: translateX(0); }
+}
+
+/* Empty state icons — float */
+@keyframes gh-float {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-6px); }
+}
+.chat-empty-icon .gh-icon svg,
+.gh-login-icon .gh-icon svg {
+    animation: gh-float 3s ease-in-out infinite;
+}
+
+/* Game hero icons */
+.chess-hero-icon .gh-icon svg {
+    animation: gh-float 3.5s ease-in-out infinite;
+    filter: drop-shadow(0 4px 12px rgba(99,102,241,0.3));
+}

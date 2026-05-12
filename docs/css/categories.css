@@ -1,0 +1,118 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   cat-filter-btn — أزرار الفئات في الـ Dropdown والـ Drawer
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── الزر الأساسي ────────────────────────────────────────────────────────── */
+.cat-filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 14px;
+    background: none;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 500;
+    text-align: right;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+}
+
+.cat-filter-btn:hover {
+    background: rgba(99, 102, 241, 0.08);
+    border-color: var(--border);
+    color: var(--text);
+}
+
+.cat-filter-btn.active {
+    background: rgba(99, 102, 241, 0.14);
+    border-color: rgba(99, 102, 241, 0.35);
+    color: var(--primary-light);
+    font-weight: 600;
+}
+
+/* ── أيقونة الفئة ────────────────────────────────────────────────────────── */
+.cat-icon {
+    font-size: 1.25rem;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-card-hover);
+    border-radius: 8px;
+    flex-shrink: 0;
+    transition: var(--transition);
+}
+
+.cat-filter-btn:hover  .cat-icon,
+.cat-filter-btn.active .cat-icon {
+    background: rgba(99, 102, 241, 0.18);
+}
+
+/* ── اسم الفئة ───────────────────────────────────────────────────────────── */
+.cat-label {
+    flex: 1;
+}
+
+/* ── العدّاد ─────────────────────────────────────────────────────────────── */
+.cat-count {
+    font-size: 0.72rem;
+    font-weight: 700;
+    min-width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-card-hover);
+    border-radius: 20px;
+    color: var(--text-muted);
+    padding: 0 6px;
+    transition: var(--transition);
+}
+
+.cat-filter-btn.active .cat-count {
+    background: var(--primary);
+    color: #fff;
+}
+
+/* ── فاصل قبل أزرار الفئات ───────────────────────────────────────────────── */
+#categories-dropdown .cat-filter-btn:nth-child(2),
+#mobile-categories-menu .cat-filter-btn:nth-child(2) {
+    margin-top: 6px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+}
+
+/* ── تحسين الـ Dropdown نفسه ─────────────────────────────────────────────── */
+#categories-dropdown {
+    padding: 8px;
+    min-width: 210px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* ── تحسين الـ Drawer (موبايل) ──────────────────────────────────────────── */
+#mobile-categories-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+#mobile-categories-menu .cat-filter-btn {
+    padding: 13px 16px;
+    font-size: 1rem;
+}
+
+#mobile-categories-menu .cat-icon {
+    font-size: 1.4rem;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+}

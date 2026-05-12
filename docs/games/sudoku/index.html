@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sudoku - Game Hub</title>
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/navigation.css">
+<link rel="stylesheet" href="../../css/svg-icons.css">
+    <link rel="stylesheet" href="../../css/sudoku.css">
+    <link rel="stylesheet" href="../../css/chat.css">
+    <link rel="stylesheet" href="../../css/chat-tabs.css">
+    <script src="../../js/app/gamehub-init.js"></script>
+</head>
+<body class="has-game-controls">
+
+<header class="main-header">
+    <a href="../../index.html" class="logo">
+        <span class="logo-icon-wrap"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 12h4m-2-2v4"/><circle cx="16" cy="11" r="1" fill="currentColor"/><circle cx="19" cy="13" r="1" fill="currentColor"/></svg></span></span>
+        <span>Game Hub</span>
+    </a>
+    <nav class="main-nav">
+        <a href="../../index.html" class="nav-link">الرئيسية</a>
+        <a href="../../about.html" class="nav-link">حول</a>
+        <a href="../../support.html" class="nav-link">الدعم</a>
+    </nav>
+<button class="header-profile" type="button" id="header-profile-btn" aria-label="الملف الشخصي">
+    <span class="profile-avatar"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span></span>
+    <span class="profile-label">دخول</span>
+</button>
+</header>
+
+<div class="sudoku-page">
+    <div class="sudoku-header">
+        <h1><span class="gh-icon gh-icon-md"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><text x="4.5" y="8" font-size="4.5" fill="currentColor" stroke="none" font-family="monospace" font-weight="bold">1</text><text x="10.5" y="8" font-size="4.5" fill="currentColor" stroke="none" font-family="monospace" font-weight="bold">9</text><text x="16.5" y="8" font-size="4.5" fill="currentColor" stroke="none" font-family="monospace" font-weight="bold">4</text><text x="4.5" y="14" font-size="4.5" fill="currentColor" stroke="none" font-family="monospace" font-weight="bold">7</text><text x="16.5" y="14" font-size="4.5" fill="currentColor" stroke="none" font-family="monospace" font-weight="bold">2</text><text x="10.5" y="20" font-size="4.5" fill="currentColor" stroke="none" font-family="monospace" font-weight="bold">5</text></svg></span> Sudoku</h1>
+        <a href="../../index.html" class="back-btn"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></span> العودة</a>
+    </div>
+
+    <div class="sudoku-info">
+        <div class="info-chip"><span class="gh-icon gh-icon-xs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg></span> <span id="timer-value">00:00</span></div>
+        <div class="info-chip"><span class="gh-icon gh-icon-xs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span> <span id="mistakes">0</span></div>
+        <div class="info-chip"><span class="gh-icon gh-icon-xs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></span> <span id="diff-label">متوسط</span></div>
+    </div>
+
+    <div class="difficulty-bar">
+        <button class="diff-btn" data-diff="easy">سهل</button>
+        <button class="diff-btn active" data-diff="medium">متوسط</button>
+        <button class="diff-btn" data-diff="hard">صعب</button>
+        <button class="diff-btn" data-diff="expert">خبير</button>
+    </div>
+
+    <div class="sudoku-scroll" id="sudoku-scroll">
+        <div class="sudoku-grid" id="sudoku-grid"></div>
+        <div class="sudoku-numpad" id="numpad"></div>
+        <div id="ai-help-container"></div>
+    </div>
+</div>
+
+<div class="sudoku-win-overlay" id="win-overlay" style="display:none;">
+    <div class="win-card">
+        <h2>🎉 أحسنت!</h2>
+        <p>أتممت اللغز بنجاح!</p>
+        <div class="win-stats">
+            <div class="win-stat"><span id="win-time">--</span><small>الوقت</small></div>
+            <div class="win-stat"><span id="win-mistakes">0</span><small>أخطاء</small></div>
+        </div>
+        <button class="play-again-btn" id="play-again-btn"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg></span> لعبة جديدة</button>
+    </div>
+</div>
+
+<script src="../../js/main.js"></script>
+<script type="module">
+    import { initGameHub } from '../../foundation/gamehub-api.js';
+    import { profileUI } from '../../foundation/profile-ui.js';
+    
+    await initGameHub();
+    profileUI.init();
+    
+    const headerProfileBtn = document.getElementById('header-profile-btn');
+    if (headerProfileBtn) {
+        headerProfileBtn.addEventListener('click', () => profileUI.open('profile'));
+    }
+</script>
+<script type="module">
+    import { SudokuLogic } from './logic.js';
+    import { SudokuRenderer } from './renderer.js';
+    import { SudokuControls } from './controls.js';
+    import { GameRuleRequestButton } from './ai-button.js';
+    import { gameManager } from '../../foundation/game-manager.js';
+
+    class SudokuGame {
+        constructor(gameFoundation) {
+            this.gameFoundation = gameFoundation;
+            this._gh = null;
+            this._ghSession = null;
+            this._winHandled = false;
+            this.logic = new SudokuLogic();
+            this.gridEl = document.getElementById('sudoku-grid');
+            this.numpadEl = document.getElementById('numpad');
+            this.mistakesEl = document.getElementById('mistakes');
+            this.diffLabelEl = document.getElementById('diff-label');
+            this.winOverlayEl = document.getElementById('win-overlay');
+            this.winTimeEl = document.getElementById('win-time');
+            this.winMistakesEl = document.getElementById('win-mistakes');
+            this.aiContainer = document.getElementById('ai-help-container');
+            this.currentDiff = 'medium';
+
+            this.renderer = new SudokuRenderer({
+                logic: this.logic,
+                gridEl: this.gridEl,
+                numpadEl: this.numpadEl,
+                timerEl: document.getElementById('timer-value'),
+                mistakesEl: this.mistakesEl,
+                diffLabelEl: this.diffLabelEl,
+                winOverlayEl: this.winOverlayEl,
+                winTimeEl: this.winTimeEl,
+                winMistakesEl: this.winMistakesEl,
+                onCellSelect: (r, c) => { if (!this.logic.isComplete) { this.logic.selectCell(r, c); this.renderer.updateGrid(); } },
+                onNumberPress: (n) => { if (!this.logic.isComplete) { this.logic.inputNumber(n); this.renderer.updateGrid(); this.checkWin(); } },
+                onErase: () => { if (!this.logic.isComplete) { this.logic.eraseCell(); this.renderer.updateGrid(); } },
+                onNoteToggle: () => {
+                    if (!this.logic.isComplete) {
+                        this.logic.toggleNoteMode();
+                        document.getElementById('note-btn')?.classList.toggle('active', this.logic.noteMode);
+                    }
+                },
+                onNewGame: () => this.startNewGame(),
+            });
+
+            this.controls = new SudokuControls({
+                logic: this.logic,
+                gridEl: this.gridEl,
+                onUpdate: () => this.renderer.updateGrid(),
+            });
+
+            this.rulesButton = new GameRuleRequestButton({
+                gameName: 'Sudoku',
+                buttonLabel: '📘 شرح قواعد Sudoku',
+                prompt: 'اشرح قواعد Sudoku للمبتدئ بشكل مختصر وواضح، بدون نصائح أثناء اللعب أو تحليل للوحة الحالية.',
+                cooldown: 5000,
+                setGameContext: (chat) => {
+                    chat.currentGameContext = { name: 'Sudoku', state: '' };
+                    if (typeof chat.saveGameContext === 'function') chat.saveGameContext();
+                }
+            });
+            this.rulesButton.mount(this.aiContainer);
+
+            this.DIFF_LABELS = { easy: 'سهل', medium: 'متوسط', hard: 'صعب', expert: 'خبير' };
+            this._initGameHub();
+
+            this.setupEventListeners();
+            this.renderer.buildGrid();
+            this.renderer.buildNumpad();
+            this.startNewGame();
+            requestAnimationFrame(() => requestAnimationFrame(() => this.updateGridSizeVar()));
+        }
+
+        updateGridSizeVar() {
+            this.renderer.updateGridSizeVar();
+        }
+
+        startTimer() {
+            this.gameFoundation.startTimer({
+                onTick: (seconds) => {
+                    // Timer is handled by GameFoundation
+                }
+            });
+        }
+
+        stopTimer() {
+            this.gameFoundation.stopTimer();
+        }
+
+        checkWin() {
+            if (!this.logic.isComplete) return;
+            this.stopTimer();
+            setTimeout(() => {
+                this.renderer.showWin();
+                // _endGHSession يتولى كل شيء: checkGameEnd + الإنجازات + XP
+                this._endGHSession(true);
+                
+                this.gameFoundation.showGameOver({
+                    score: 0,
+                    title: 'أحسنت!',
+                    message: `أتممت اللغز في ${document.getElementById('timer-value').textContent} وبـ ${this.logic.mistakes} أخطاء!`,
+                    icon: '🎉'
+                });
+            }, 350);
+        }
+
+        startNewGame() {
+            this.stopTimer();
+            this.renderer.hideWin();
+            this._startGHSession();
+            this.logic.newGame(this.currentDiff);
+            this.renderer.setDifficultyLabel(this.DIFF_LABELS[this.currentDiff]);
+            this.renderer.updateGrid();
+            this.startTimer();
+            this.updateGridSizeVar();
+            this.gameFoundation.updateAIContext({ event: 'new_game', difficulty: this.currentDiff });
+        }
+
+        async _initGameHub() {
+            try {
+                const { GameHubAPI } = await import('../../foundation/gamehub-api.js');
+                this._gh = GameHubAPI;
+                await this._gh.auth.init();
+                await this._gh.achievements.init();
+            } catch (e) {
+                console.warn('[Sudoku] GameHub not available:', e.message);
+            }
+        }
+
+        async _startGHSession() {
+            this._winHandled = false;
+            if (this._gh) {
+                this._ghSession = await this._gh.onGameStart('sudoku');
+            }
+        }
+
+        async _endGHSession(isWin = false) {
+            if (this._gh && this._ghSession && !this._winHandled) {
+                this._winHandled = true;
+                const timerVal = document.getElementById('timer-value')?.textContent || '00:00';
+                const parts = timerVal.split(':');
+                const timeSeconds = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+                
+                await this._gh.onGameEnd(this._ghSession, {
+                    score: Math.max(0, 1000 - (this.logic.mistakes * 50) - timeSeconds),
+                    isWin: true,
+                    difficulty: this.currentDiff,
+                    timeSeconds
+                });
+                this._ghSession = null;
+            }
+        }
+
+        setupEventListeners() {
+            window.addEventListener('resize', () => this.updateGridSizeVar());
+
+            document.querySelectorAll('.diff-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    this.currentDiff = btn.dataset.diff;
+                    this.startNewGame();
+                });
+            });
+
+            document.getElementById('play-again-btn').addEventListener('click', () => {
+                this.renderer.hideWin();
+                this.startNewGame();
+            });
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const sudokuFoundation = gameManager.initGame({
+            name: 'Sudoku',
+            storageKey: 'sudoku-state',
+            onRestart: () => {
+                if (window.sudokuGame) {
+                    window.sudokuGame.startNewGame();
+                }
+            },
+            hasScore: false,
+            hasTimer: true,
+        });
+        window.sudokuGame = new SudokuGame(sudokuFoundation);
+    });
+</script>
+</body>
+</html>

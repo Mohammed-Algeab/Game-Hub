@@ -1,0 +1,79 @@
+[
+  {
+    "id": "tetris_first_game",
+    "name": "أولى الخطوات",
+    "description": "العب أول مباراة تتريس",
+    "icon": "🧱",
+    "tier": "bronze",
+    "xp_reward": 10,
+    "condition_type": "games_played",
+    "condition_value": 1,
+    "display_order": 1
+  },
+  {
+    "id": "tetris_score_1000",
+    "name": "ألف نقطة",
+    "description": "احصل على 1000 نقطة",
+    "icon": "🎯",
+    "tier": "bronze",
+    "xp_reward": 25,
+    "condition_type": "score",
+    "condition_value": 1000,
+    "display_order": 2
+  },
+  {
+    "id": "tetris_score_5000",
+    "name": "خمسة آلاف",
+    "description": "احصل على 5000 نقطة",
+    "icon": "🚀",
+    "tier": "silver",
+    "xp_reward": 50,
+    "condition_type": "score",
+    "condition_value": 5000,
+    "display_order": 3
+  },
+  {
+    "id": "tetris_score_10000",
+    "name": "عشرة آلاف",
+    "description": "احصل على 10000 نقطة",
+    "icon": "💎",
+    "tier": "gold",
+    "xp_reward": 100,
+    "condition_type": "score",
+    "condition_value": 10000,
+    "display_order": 4
+  },
+  {
+    "id": "tetris_score_25000",
+    "name": "أسطورة التتريس",
+    "description": "احصل على 25000 نقطة",
+    "icon": "👑",
+    "tier": "platinum",
+    "xp_reward": 300,
+    "condition_type": "score",
+    "condition_value": 25000,
+    "display_order": 5
+  },
+  {
+    "id": "tetris_lines_100",
+    "name": "ممحاة الخطوط",
+    "description": "امسح 100 خط إجمالاً",
+    "icon": "📏",
+    "tier": "silver",
+    "xp_reward": 60,
+    "condition_type": "lines_cleared",
+    "condition_value": 100,
+    "display_order": 6
+  },
+  {
+    "id": "tetris_level_10",
+    "name": "صعود السلالم",
+    "description": "وصل للمستوى 10",
+    "icon": "🏔️",
+    "tier": "gold",
+    "xp_reward": 100,
+    "condition_type": "level",
+    "condition_value": 10,
+    "display_order": 7
+  }
+]

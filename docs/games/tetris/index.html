@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tetris - Game Hub</title>
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/navigation.css">
+<link rel="stylesheet" href="../../css/svg-icons.css">
+    <link rel="stylesheet" href="../../css/tetris.css">
+    <link rel="stylesheet" href="../../css/chat.css">
+    <link rel="stylesheet" href="../../css/chat-tabs.css">
+    <script src="../../js/app/gamehub-init.js"></script>
+</head>
+<body class="has-game-controls">
+    <header class="main-header">
+        <a href="../../index.html" class="logo"><span class="logo-icon-wrap"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 12h4m-2-2v4"/><circle cx="16" cy="11" r="1" fill="currentColor"/><circle cx="19" cy="13" r="1" fill="currentColor"/></svg></span></span><span>Game Hub</span></a>
+        <nav class="main-nav">
+            <a href="../../index.html" class="nav-link">الرئيسية</a>
+            <a href="../../about.html" class="nav-link">حول</a>
+            <a href="../../support.html" class="nav-link">الدعم</a>
+        </nav>
+<button class="header-profile" type="button" id="header-profile-btn" aria-label="الملف الشخصي">
+    <span class="profile-avatar"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span></span>
+    <span class="profile-label">دخول</span>
+</button>
+    </header>
+
+    <div class="game-page">
+        <div class="game-header">
+            <h1><span class="gh-icon gh-icon-md"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="10" width="5" height="5" rx="1.5"/><rect x="7" y="10" width="5" height="5" rx="1.5"/><rect x="12" y="10" width="5" height="5" rx="1.5"/><rect x="12" y="5" width="5" height="5" rx="1.5"/><rect x="17" y="10" width="5" height="5" rx="1.5" opacity="0.35"/></svg></span> Tetris</h1>
+            <a href="../../index.html" class="back-btn"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></span> العودة</a>
+        </div>
+        <div class="game-layout">
+            <div class="game-board-container">
+                <canvas id="game-canvas" width="300" height="600"></canvas>
+            </div>
+            <div class="game-sidebar">
+                <div class="score-panel">
+                    <div>Score: <span id="score-value">0</span></div>
+                    <div>Level: <span id="level-value">1</span></div>
+                    <div>Lines: <span id="lines">0</span></div>
+                </div>
+                <div class="next-panel"><canvas id="next-canvas" width="120" height="120"></canvas></div>
+                <div class="hold-panel"><canvas id="hold-canvas" width="120" height="120"></canvas></div>
+                <div class="controls-header">
+                    <button id="toggle-controls-btn" class="toggle-controls-btn" title="إظهار/إخفاء التحكم"><span class="toggle-icon"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></span></span><span class="toggle-text">التحكم</span></button>
+                </div>
+                <div class="controls-info" id="controls-info">
+                    <div class="controls-close"><button id="close-controls-btn" class="close-btn" title="إغلاق"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></button></div>
+                    <h3><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="14" width="18" height="7" rx="3"/><path d="M12 14V8"/><circle cx="12" cy="6" r="2"/><path d="M9 17h.01M15 17h.01"/></svg></span> التحكم</h3>
+                    <div class="controls-grid">
+                        <div class="control-item"><span>اليسار</span><span class="control-key">←</span></div>
+                        <div class="control-item"><span>اليمين</span><span class="control-key">→</span></div>
+                        <div class="control-item"><span>الأسفل</span><span class="control-key">↓</span></div>
+                        <div class="control-item"><span>دوران</span><span class="control-key">↑ / X</span></div>
+                        <div class="control-item"><span>دوران عكسي</span><span class="control-key">Z</span></div>
+                        <div class="control-item"><span>إسقاط فوري</span><span class="control-key">Space / C</span></div>
+                        <div class="control-item"><span>احتجاز</span><span class="control-key">Shift / H</span></div>
+                        <div class="control-item"><span>إيقاف</span><span class="control-key">P</span></div>
+                    </div>
+                    <p style="margin-top:12px;text-align:center;">على الهاتف: استخدم الأزرار في الأسفل أو اسحب على الشاشة. اضغط مرتين للإسقاط الفوري.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="main-footer"><p>Game Hub - منصة ألعاب متكاملة</p></footer>
+
+    <script src="../../js/main.js"></script>
+    <script type="module">
+        import { initGameHub } from '../../foundation/gamehub-api.js';
+        import { profileUI } from '../../foundation/profile-ui.js';
+        
+        await initGameHub();
+        profileUI.init();
+        
+        const headerProfileBtn = document.getElementById('header-profile-btn');
+        if (headerProfileBtn) {
+            headerProfileBtn.addEventListener('click', () => profileUI.open('profile'));
+        }
+    </script>
+    <script type="module">
+        import { TetrisLogic } from './logic.js';
+        import { TetrisRenderer } from './renderer.js';
+        import { TetrisControls } from './controls.js';
+        import { CONFIG } from './config.js';
+        import { gameManager } from '../../foundation/game-manager.js';
+
+        class TetrisGame {
+            constructor(gameFoundation) {
+                this.gameFoundation = gameFoundation;
+                this.canvas = document.getElementById('game-canvas');
+                this.nextCanvas = document.getElementById('next-canvas');
+                this.holdCanvas = document.getElementById('hold-canvas');
+                this.linesEl = document.getElementById('lines');
+                this.logic = new TetrisLogic();
+                this.renderer = new TetrisRenderer(this.canvas, this.nextCanvas, this.holdCanvas);
+                this.controls = new TetrisControls(this);
+                this.dropCounter = 0;
+                this.lastTime = 0;
+                this.animationId = null;
+                this._gh = null;
+                this._ghSession = null;
+                this._gameOverHandled = false;
+                this._initGameHub();
+                this.start();
+            }
+
+            async _initGameHub() {
+                try {
+                    const { GameHubAPI } = await import('../../foundation/gamehub-api.js');
+                    this._gh = GameHubAPI;
+                    await this._gh.auth.init();
+                    await this._gh.achievements.init();
+                } catch (e) {
+                    console.warn('[Tetris] GameHub not available:', e.message);
+                }
+            }
+
+            async _startGHSession() {
+                if (this._gh) {
+                    this._ghSession = await this._gh.onGameStart('tetris');
+                }
+            }
+
+            async _endGHSession() {
+                if (this._gh && this._ghSession) {
+                    await this._gh.onGameEnd(this._ghSession, {
+                        score: this.logic.score,
+                        isWin: false,
+                        level: this.logic.level,
+                        linesCleared: this.logic.lines
+                    });
+                    this._ghSession = null;
+                }
+            }
+
+            start() {
+                this.lastTime = performance.now();
+                this._gameOverHandled = false;
+                this._startGHSession();
+                this.gameLoop();
+            }
+
+            gameLoop(time = performance.now()) {
+                const deltaTime = time - this.lastTime;
+                this.lastTime = time;
+                if (!this.gameFoundation.isPaused && !this.gameFoundation.isGameOver) {
+                    this.dropCounter += deltaTime;
+                    if (this.dropCounter > this.logic.getDropInterval()) {
+                        this.logic.softDrop();
+                        this.dropCounter = 0;
+                    }
+                    this.controls.update();
+                }
+                this.render();
+                this.updateUI();
+                this.animationId = requestAnimationFrame(t => this.gameLoop(t));
+            }
+
+            render() {
+                this.renderer.render(this.logic);
+                if (this.logic.gameOver) {
+                    if (!this._gameOverHandled) {
+                        this._gameOverHandled = true;
+                        this._endGHSession();
+                        if (this._gh) {
+                            this._gh.achievements.updateProgress('tetris', 'score', this.logic.score);
+                            this._gh.achievements.updateProgress('tetris', 'level', this.logic.level);
+                        }
+                    }
+                    this.gameFoundation.showGameOver({ score: this.logic.score, title: 'انتهت اللعبة!', message: 'اضغط Enter للإعادة' });
+                } else if (this.gameFoundation.isPaused) {
+                    this.renderer.drawOverlay('إيقاف مؤقت', 'اضغط P للاستئناف');
+                }
+            }
+
+            updateUI() {
+                this.gameFoundation.setScore(this.logic.score);
+                this.gameFoundation.setLevel(this.logic.level);
+                this.linesEl.textContent = this.logic.lines;
+            }
+
+            restart() {
+                if (this.animationId) cancelAnimationFrame(this.animationId);
+                this.gameFoundation.hideGameOver();
+                this.gameFoundation.setScore(0);
+                this.gameFoundation.setLevel(1);
+                this.gameFoundation._updatePauseBtn();
+                document.getElementById('game-overlay')?.classList.add('hidden');
+                this.controls.destroy();
+                this.logic.reset();
+                this.controls = new TetrisControls(this);
+                this.dropCounter = 0;
+                this._gameOverHandled = false;
+                this.start();
+            }
+        }
+
+        window.CONFIG = CONFIG;
+        document.addEventListener('DOMContentLoaded', () => {
+            const tetrisFoundation = gameManager.initGame({
+                name: 'Tetris',
+                storageKey: 'tetris-highscore',
+                onRestart: () => {
+                    if (window.tetrisGame) {
+                        window.tetrisGame.restart();
+                    }
+                },
+                hasScore: true,
+                hasTimer: false,
+            });
+            window.tetrisGame = new TetrisGame(tetrisFoundation);
+            
+            const toggleBtn = document.getElementById('toggle-controls-btn');
+            const controlsInfo = document.getElementById('controls-info');
+            const closeBtn = document.getElementById('close-controls-btn');
+            if (toggleBtn && controlsInfo) {
+                toggleBtn.addEventListener('click', () => {
+                    controlsInfo.classList.toggle('hidden');
+                    localStorage.setItem('tetris-controls-hidden', controlsInfo.classList.contains('hidden') ? 'true' : 'false');
+                });
+                closeBtn?.addEventListener('click', () => {
+                    controlsInfo.classList.add('hidden');
+                    localStorage.setItem('tetris-controls-hidden', 'true');
+                });
+                if (localStorage.getItem('tetris-controls-hidden') === 'true') controlsInfo.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

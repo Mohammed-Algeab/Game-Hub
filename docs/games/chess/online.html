@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>شطرنج أونلاين — Game Hub</title>
+<link rel="stylesheet" href="../../css/main.css">
+<link rel="stylesheet" href="../../css/navigation.css">
+<link rel="stylesheet" href="../../css/svg-icons.css">
+<link rel="stylesheet" href="../../css/chess.css">
+</head>
+<body>
+
+<header class="nav-header">
+  <div class="nav-container">
+    <a href="../../index.html" class="nav-brand"><span class="gh-icon gh-icon-sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 12h4m-2-2v4"/><circle cx="16" cy="11" r="1" fill="currentColor"/><circle cx="19" cy="13" r="1" fill="currentColor"/></svg></span> Game Hub</a>
+    <nav class="nav-links">
+      <a href="index.html" class="nav-link">← الشطرنج</a>
+    </nav>
+    <button class="header-profile" type="button" id="header-profile-btn" aria-label="الملف الشخصي">
+        <span class="profile-avatar"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span></span>
+        <span class="profile-label">دخول</span>
+    </button>
+  </div>
+</header>
+
+<main class="chess-main">
+
+  <div class="chess-status">
+    <span id="status-text">جارٍ الاتصال...</span>
+  </div>
+
+  <div class="chess-layout">
+
+    <!-- الرقعة -->
+    <div class="chess-board-wrapper">
+      <canvas id="chess-canvas"></canvas>
+
+      <!-- شاشة الانتظار فوق الرقعة -->
+      <div id="waiting-screen" class="waiting-screen">
+        <div class="waiting-inner">
+          <div class="waiting-icon">♟</div>
+          <p id="waiting-text">جارٍ الاتصال...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- الشريط الجانبي -->
+    <aside class="chess-sidebar">
+
+      <!-- إعداد الغرفة -->
+      <div id="room-setup" class="online-room-box">
+        <h3><span class="gh-icon gh-icon-sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3c-2.5 3-4 5.5-4 9s1.5 6 4 9m0-18c2.5 3 4 5.5 4 9s-1.5 6-4 9"/><path d="M3.6 9h16.8M3.6 15h16.8"/></svg></span> الغرفة</h3>
+        <div class="room-actions">
+          <button id="btn-create-room" class="ctrl-btn primary" disabled>
+            ➕ إنشاء غرفة
+          </button>
+          <div class="room-join-row">
+            <input id="room-code-input" type="text"
+                   placeholder="كود الغرفة (6 أحرف)"
+                   maxlength="6" autocomplete="off"
+                   style="text-transform:uppercase">
+            <button id="btn-join-room" class="ctrl-btn" disabled>دخول</button>
+          </div>
+        </div>
+
+        <!-- بعد إنشاء الغرفة -->
+        <div id="room-info" class="room-info hidden">
+          <div class="room-code-display">
+            <span class="room-code-label">كود الغرفة:</span>
+            <strong id="room-code-text" class="room-code-value"></strong>
+          </div>
+          <button id="btn-copy-code" class="ctrl-btn-sm"><span class="gh-icon gh-icon-xs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></span> نسخ</button>
+          <p class="room-waiting-hint">أرسل الكود لصديقك ليدخل الغرفة</p>
+        </div>
+      </div>
+
+      <!-- ألوان اللاعب -->
+      <div id="player-info" class="player-info hidden">
+        <div id="my-color-badge" class="color-badge"></div>
+      </div>
+
+      <!-- سجل الحركات -->
+      <div class="chess-history-box">
+        <h3>سجل الحركات</h3>
+        <div id="move-list" class="move-list"></div>
+      </div>
+
+      <!-- أزرار اللعب -->
+      <div id="game-actions" class="chess-controls hidden">
+        <button id="btn-draw" class="ctrl-btn"><span class="gh-icon gh-icon-sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.42 4.58a5.4 5.4 0 00-7.65 0l-.77.78-.77-.78a5.4 5.4 0 00-7.65 7.65l8.42 8.42 8.42-8.42a5.4 5.4 0 000-7.65z" stroke-dasharray="0"/><path d="M3 7l4 4m10-4l-4 4m-3-3l2 2"/></svg></span> تعادل</button>
+        <button id="btn-resign" class="ctrl-btn danger"><span class="gh-icon gh-icon-sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></span> استسلام</button>
+        <a href="index.html" class="ctrl-btn"><span class="gh-icon gh-icon-sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> القائمة</a>
+      </div>
+
+      <div id="pregame-actions" class="chess-controls">
+        <a href="index.html" class="ctrl-btn"><span class="gh-icon gh-icon-sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> القائمة</a>
+      </div>
+
+    </aside>
+  </div>
+</main>
+
+<!-- نافذة نهاية اللعبة -->
+<div id="gameover-modal" class="gameover-modal hidden">
+  <div class="gameover-card">
+    <div id="gameover-icon"><span class="gh-icon gh-icon-2xl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8m-4-4v4"/><path d="M6 3h12v8a6 6 0 01-12 0V3z"/><path d="M6 7H3a1 1 0 00-1 1v2a4 4 0 004 4m12-7h3a1 1 0 011 1v2a4 4 0 01-4 4"/></svg></span></div>
+    <h2 id="gameover-title"></h2>
+    <p  id="gameover-msg"></p>
+    <div class="gameover-actions">
+      <a href="index.html" class="ctrl-btn primary"><span class="gh-icon gh-icon-sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> القائمة</a>
+      <button id="btn-play-again" class="ctrl-btn">↺ لعبة جديدة</button>
+    </div>
+  </div>
+</div>
+
+<!-- Chat Widget (Floating) -->
+<link rel="stylesheet" href="../../css/chat.css">
+<link rel="stylesheet" href="../../css/chat-tabs.css">
+<script src="../../js/app/gamehub-init.js"></script>
+
+<!-- نافذة عرض التعادل -->
+<div id="draw-modal" class="gameover-modal hidden">
+  <div class="gameover-card">
+    <div><span class="gh-icon gh-icon-2xl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.42 4.58a5.4 5.4 0 00-7.65 0l-.77.78-.77-.78a5.4 5.4 0 00-7.65 7.65l8.42 8.42 8.42-8.42a5.4 5.4 0 000-7.65z" stroke-dasharray="0"/><path d="M3 7l4 4m10-4l-4 4m-3-3l2 2"/></svg></span></div>
+    <h2>عرض تعادل</h2>
+    <p>يعرض خصمك التعادل. هل تقبل؟</p>
+    <div class="gameover-actions">
+      <button id="btn-accept-draw" class="ctrl-btn primary"><span class="gh-icon gh-icon-sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> قبول</button>
+      <button id="btn-decline-draw" class="ctrl-btn danger"><span class="gh-icon gh-icon-sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span> رفض</button>
+    </div>
+  </div>
+</div>
+
+<script src="../../js/main.js"></script>
+<script type="module">
+import { ChessRenderer }      from './ui/renderer.js';
+import { OnlineController }   from './online/online-controller.js';
+import { gameManager }        from '../../foundation/game-manager.js';
+
+// تسجيل بسيط — online لا يحتاج pause/timer/score كلاسيكي
+const foundation = gameManager.initGame({
+    name:     'Chess Online',
+    hasScore: false,
+    hasTimer: false,
+    // لا onRestart — اللعبة الأونلاين تبدأ بغرفة جديدة
+});
+
+// ── الإعداد ───────────────────────────────────────────────────────────────────
+const SERVER_URL  = 'https://chess-server-k0y8.onrender.com/'; // ← غيّر بعد النشر على Render
+const canvas      = document.getElementById('chess-canvas');
+const statusEl    = document.getElementById('status-text');
+const moveListEl  = document.getElementById('move-list');
+const chatEl      = document.getElementById('chat-messages');
+
+const renderer = new ChessRenderer(canvas);
+
+const ctrl = new OnlineController({
+    canvas, renderer,
+    ui: { statusEl, moveListEl, chatEl },
+    serverUrl: SERVER_URL,
+    callbacks: {
+        onRoomReady(code, color) {
+            showRoomInfo(code, color);
+        },
+        onGameOver(status, winner) {
+            showGameOver(status, winner);
+            // Foundation bridge — نُبلّغ AI بنتيجة اللعبة
+            const myColor  = ctrl._myColor;
+            const iWon     = winner === myColor;
+            const isDraw   = !winner || winner === 'draw';
+            foundation?.updateAIContext({
+                event:  'game_over',
+                status,
+                result: isDraw ? 'draw' : iWon ? 'win' : 'loss',
+            });
+        },
+        onDrawOffer() {
+            document.getElementById('draw-modal').classList.remove('hidden');
+        },
+        onPlayerLeft() {
+            showGameOver('player_left', ctrl._myColor);
+        },
+        onConnectionError(msg) {
+            statusEl.textContent = '⚠ ' + (msg || 'خطأ في الاتصال');
+            enableButtons(false);
+        },
+    },
+});
+
+// ── الاتصال عند تحميل الصفحة ──────────────────────────────────────────────────
+ctrl.connect().then(() => {
+    enableButtons(true);
+    document.getElementById('waiting-screen').classList.add('hidden');
+}).catch(() => {
+    document.getElementById('waiting-text').textContent = '⚠ تعذّر الاتصال';
+});
+
+// ── أزرار الغرفة ──────────────────────────────────────────────────────────────
+document.getElementById('btn-create-room').addEventListener('click', async () => {
+    disableRoomBtns();
+    await ctrl.createRoom();
+});
+
+document.getElementById('btn-join-room').addEventListener('click', async () => {
+    const roomCodeInput = document.getElementById('room-code-input');
+      if (!roomCodeInput) return;
+      const code = roomCodeInput.value.trim().toUpperCase();
+    if (code.length !== 6) {
+        alert('الكود يجب أن يكون 6 أحرف');
+        return;
+    }
+    disableRoomBtns();
+    try {
+        await ctrl.joinRoom(code);
+    } catch (err) {
+        alert(err.message);
+        enableButtons(true);
+    }
+});
+
+document.getElementById('room-code-input').addEventListener('input', function() {
+    if (this && this.value) this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+});
+
+// ── نسخ الكود ─────────────────────────────────────────────────────────────────
+document.getElementById('btn-copy-code').addEventListener('click', () => {
+    const code = document.getElementById('room-code-text').textContent;
+    navigator.clipboard?.writeText(code).then(() => {
+        document.getElementById('btn-copy-code').innerHTML = '<span class="gh-icon gh-icon-xs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> تم';
+        setTimeout(() => { document.getElementById('btn-copy-code').innerHTML = '<span class="gh-icon gh-icon-xs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></span> نسخ'; }, 2000);
+    });
+});
+
+// ── أزرار اللعب ───────────────────────────────────────────────────────────────
+document.getElementById('btn-draw').addEventListener('click', () => {
+    if (confirm('هل تريد عرض التعادل؟')) ctrl.offerDraw();
+});
+document.getElementById('btn-resign').addEventListener('click', () => {
+    if (confirm('هل أنت متأكد من الاستسلام؟')) {
+        ctrl.resign();
+        showGameOver('resign', null);
+    }
+});
+
+// ── نافذة التعادل ─────────────────────────────────────────────────────────────
+document.getElementById('btn-accept-draw').addEventListener('click', () => {
+    ctrl.acceptDraw();
+    document.getElementById('draw-modal').classList.add('hidden');
+});
+document.getElementById('btn-decline-draw').addEventListener('click', () => {
+    ctrl.declineDraw();
+    document.getElementById('draw-modal').classList.add('hidden');
+});
+
+// ── نظام الدردشة العائم (AI + Global + Private) ─────────────────────────────
+import { initChat } from '../../js/chat.js';
+import { initGameHub } from '../../foundation/gamehub-api.js';
+import { profileUI } from '../../foundation/profile-ui.js';
+
+await initGameHub();
+initChat();
+profileUI.init();
+
+const headerProfileBtn = document.getElementById('header-profile-btn');
+if (headerProfileBtn) {
+    headerProfileBtn.addEventListener('click', () => profileUI.open('profile'));
+}
+
+// ── لعبة جديدة ────────────────────────────────────────────────────────────────
+document.getElementById('btn-play-again').addEventListener('click', () => {
+    window.location.reload();
+});
+
+// ── مساعدات UI ────────────────────────────────────────────────────────────────
+function enableButtons(on) {
+    document.getElementById('btn-create-room').disabled = !on;
+    document.getElementById('btn-join-room').disabled   = !on;
+}
+
+function disableRoomBtns() {
+    document.getElementById('btn-create-room').disabled = true;
+    document.getElementById('btn-join-room').disabled   = true;
+}
+
+function showRoomInfo(code, color) {
+    document.getElementById('room-code-text').textContent = code;
+    document.getElementById('room-info').classList.remove('hidden');
+
+    const colorAr = color === 'w' ? '♔ أبيض' : '♚ أسود';
+    document.getElementById('player-info').classList.remove('hidden');
+    document.getElementById('my-color-badge').textContent = `أنت: ${colorAr}`;
+    document.getElementById('my-color-badge').className   = `color-badge color-${color}`;
+
+    document.getElementById('room-setup').querySelector('.room-actions').classList.add('hidden');
+    document.getElementById('game-actions').classList.remove('hidden');
+    document.getElementById('pregame-actions').classList.add('hidden');
+}
+
+function showGameOver(status, winner) {
+    const myColor  = ctrl._myColor;
+    const iWon     = winner === myColor;
+    const isDraw   = winner === 'draw' || status === 'stalemate' || status === 'insufficient' || status === 'fifty-move';
+
+    const map = {
+        checkmate:    { icon: iWon ? '<span class="gh-icon gh-icon-2xl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8m-4-4v4"/><path d="M6 3h12v8a6 6 0 01-12 0V3z"/><path d="M6 7H3a1 1 0 00-1 1v2a4 4 0 004 4m12-7h3a1 1 0 011 1v2a4 4 0 01-4 4"/></svg></span>' : '<span class="gh-icon gh-icon-2xl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l8.84 8.84 2-3 2 3 4.84-4.84 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></span>', title: iWon ? 'فزت!' : 'خسرت!', msg: 'كش مات' },
+        resign:       { icon: iWon ? '<span class="gh-icon gh-icon-2xl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8m-4-4v4"/><path d="M6 3h12v8a6 6 0 01-12 0V3z"/><path d="M6 7H3a1 1 0 00-1 1v2a4 4 0 004 4m12-7h3a1 1 0 011 1v2a4 4 0 01-4 4"/></svg></span>' : '<span class="gh-icon gh-icon-2xl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></span>', title: iWon ? 'استسلم الخصم!' : 'استسلمت', msg: '' },
+        stalemate:    { icon: '<span class="gh-icon gh-icon-2xl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.42 4.58a5.4 5.4 0 00-7.65 0l-.77.78-.77-.78a5.4 5.4 0 00-7.65 7.65l8.42 8.42 8.42-8.42a5.4 5.4 0 000-7.65z" stroke-dasharray="0"/><path d="M3 7l4 4m10-4l-4 4m-3-3l2 2"/></svg></span>', title: 'تعادل', msg: 'وقفة' },
+        draw:         { icon: '<span class="gh-icon gh-icon-2xl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.42 4.58a5.4 5.4 0 00-7.65 0l-.77.78-.77-.78a5.4 5.4 0 00-7.65 7.65l8.42 8.42 8.42-8.42a5.4 5.4 0 000-7.65z" stroke-dasharray="0"/><path d="M3 7l4 4m10-4l-4 4m-3-3l2 2"/></svg></span>', title: 'تعادل', msg: 'اتفق اللاعبان على التعادل' },
+        player_left:  { icon: '<span class="gh-icon gh-icon-2xl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8m-4-4v4"/><path d="M6 3h12v8a6 6 0 01-12 0V3z"/><path d="M6 7H3a1 1 0 00-1 1v2a4 4 0 004 4m12-7h3a1 1 0 011 1v2a4 4 0 01-4 4"/></svg></span>', title: 'فزت!', msg: 'غادر الخصم اللعبة' },
+        insufficient: { icon: '<span class="gh-icon gh-icon-2xl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.42 4.58a5.4 5.4 0 00-7.65 0l-.77.78-.77-.78a5.4 5.4 0 00-7.65 7.65l8.42 8.42 8.42-8.42a5.4 5.4 0 000-7.65z" stroke-dasharray="0"/><path d="M3 7l4 4m10-4l-4 4m-3-3l2 2"/></svg></span>', title: 'تعادل', msg: 'قطع غير كافية' },
+        'fifty-move': { icon: '<span class="gh-icon gh-icon-2xl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.42 4.58a5.4 5.4 0 00-7.65 0l-.77.78-.77-.78a5.4 5.4 0 00-7.65 7.65l8.42 8.42 8.42-8.42a5.4 5.4 0 000-7.65z" stroke-dasharray="0"/><path d="M3 7l4 4m10-4l-4 4m-3-3l2 2"/></svg></span>', title: 'تعادل', msg: 'قاعدة الخمسين حركة' },
+    };
+
+    const c = isDraw ? map['draw'] : (map[status] ?? { icon:'🏁', title:'انتهت اللعبة', msg:'' });
+    document.getElementById('gameover-icon').innerHTML   = c.icon;
+    document.getElementById('gameover-title').textContent = c.title;
+    document.getElementById('gameover-msg').textContent   = c.msg;
+    document.getElementById('gameover-modal').classList.remove('hidden');
+}
+</script>
+
+</body>
+</html>

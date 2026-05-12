@@ -265,29 +265,7 @@ const ctrl = new OnlineController({
 let currentUserId = null;
 let currentInviteId = null;
 
-// ✅ إصلاح: getSupabase هي async — يجب await
-const supabase = await getSupabase();
-
-if (supabase) {
-    try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-            currentUserId = user.id;
-            document.getElementById('invite-auth-required').classList.add('hidden');
-            document.getElementById('invite-form').classList.remove('hidden');
-            document.getElementById('my-uuid-value').textContent = user.id;
-        }
-    } catch (e) {
-        console.log('Not authenticated - room mode only');
-    }
-}
-
-ctrl.connect(currentUserId).then(() => {
-    enableButtons(true);
-    document.getElementById('waiting-screen').classList.add('hidden');
-}).catch(() => {
-    document.getElementById('waiting-text').textContent = '⚠ تعذّر الاتصال';
-});
+// ── سيتم تحديد currentUserId + الاتصال بعد initGameHub() أدناه ──
 
 // ── أزرار الغرفة ──────────────────────────────────────────────────────────────
 document.getElementById('btn-create-room').addEventListener('click', async () => {
@@ -415,6 +393,26 @@ import { initGameHub } from '../../foundation/gamehub-api.js';
 import { profileUI } from '../../foundation/profile-ui.js';
 
 await initGameHub();
+
+// ✅ الآن authManager جاهز تماماً — نتحقق من المستخدم بأمان
+const authedUser = GameHubAPI.auth.getUser();
+const isGuest    = GameHubAPI.auth.isGuest();
+
+if (authedUser && !isGuest) {
+    currentUserId = authedUser.id;
+    document.getElementById('invite-auth-required').classList.add('hidden');
+    document.getElementById('invite-form').classList.remove('hidden');
+    document.getElementById('my-uuid-value').textContent = authedUser.id;
+}
+
+// ✅ الاتصال بالخادم بعد معرفة هوية اللاعب
+ctrl.connect(currentUserId).then(() => {
+    enableButtons(true);
+    document.getElementById('waiting-screen').classList.add('hidden');
+}).catch(() => {
+    document.getElementById('waiting-text').textContent = '⚠ تعذّر الاتصال';
+});
+
 initChat();
 profileUI.init();
 

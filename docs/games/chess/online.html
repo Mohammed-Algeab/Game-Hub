@@ -8,23 +8,35 @@
 <link rel="stylesheet" href="../../css/navigation.css">
 <link rel="stylesheet" href="../../css/svg-icons.css">
 <link rel="stylesheet" href="../../css/chess.css">
+<link rel="stylesheet" href="../../css/chat.css">
+<link rel="stylesheet" href="../../css/chat-tabs.css">
+<script src="../../js/app/gamehub-init.js"></script>
 </head>
-<body>
+<body class="has-game-controls">
 
-<header class="nav-header">
-  <div class="nav-container">
-    <a href="../../index.html" class="nav-brand"><span class="gh-icon gh-icon-sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 12h4m-2-2v4"/><circle cx="16" cy="11" r="1" fill="currentColor"/><circle cx="19" cy="13" r="1" fill="currentColor"/></svg></span> Game Hub</a>
-    <nav class="nav-links">
-      <a href="index.html" class="nav-link">← الشطرنج</a>
+<header class="main-header">
+    <a href="../../index.html" class="logo">
+        <span class="logo-icon-wrap"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 12h4m-2-2v4"/><circle cx="16" cy="11" r="1" fill="currentColor"/><circle cx="19" cy="13" r="1" fill="currentColor"/></svg></span></span>
+        <span>Game Hub</span>
+    </a>
+    <nav class="main-nav">
+        <a href="index.html" class="nav-link">الشطرنج</a>
+        <a href="../../index.html" class="nav-link">الرئيسية</a>
+        <a href="../../support.html" class="nav-link">الدعم</a>
     </nav>
     <button class="header-profile" type="button" id="header-profile-btn" aria-label="الملف الشخصي">
         <span class="profile-avatar"><span class="gh-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span></span>
         <span class="profile-label">دخول</span>
     </button>
-  </div>
 </header>
 
-<main class="chess-main">
+<div class="chess-page">
+    <div class="chess-header">
+        <h1><span class="gh-icon gh-icon-md"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20v-2h10v2"/><path d="M7 18c0 0 .5-2 2-3l1-4c-1 0-2-1-2-2s1-2 2-2h4c1 0 2 1 2 2s-1 2-2 2l1 4c1.5 1 2 3 2 3"/><line x1="7" y1="20" x2="17" y2="20"/><path d="M9 7V5h2V4h2v1h2v2"/></svg></span> شطرنج أونلاين</h1>
+        <a href="index.html" class="back-btn"><span class="gh-icon gh-icon-sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> القائمة</a>
+    </div>
+
+    <main class="chess-main" id="online-main" style="padding-top:0;min-height:auto;">
 
   <div class="chess-status">
     <span id="status-text">جارٍ الاتصال...</span>
@@ -35,6 +47,17 @@
     <!-- الرقعة -->
     <div class="chess-board-wrapper">
       <canvas id="chess-canvas"></canvas>
+
+      <!-- نافذة الترقية -->
+      <div id="promotion-dialog" class="promotion-dialog hidden">
+          <p>اختر قطعة الترقية</p>
+          <div class="promotion-choices">
+              <button class="prom-btn" data-type="q">♕</button>
+              <button class="prom-btn" data-type="r">♖</button>
+              <button class="prom-btn" data-type="b">♗</button>
+              <button class="prom-btn" data-type="n">♘</button>
+          </div>
+      </div>
 
       <!-- شاشة الانتظار فوق الرقعة -->
       <div id="waiting-screen" class="waiting-screen">
@@ -47,6 +70,28 @@
 
     <!-- الشريط الجانبي -->
     <aside class="chess-sidebar">
+
+      <!-- دعوة لاعب (للمستخدمين المسجلين فقط) -->
+      <div id="invite-section" class="online-room-box">
+        <h3><span class="gh-icon gh-icon-sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6m-3-3h6"/></svg></span> دعوة لاعب</h3>
+        <div id="invite-auth-required" class="room-waiting-hint" style="color: var(--accent);">
+          سجّل الدخول لدعوة لاعب مباشرة
+        </div>
+        <div id="invite-form" class="hidden">
+          <div class="room-join-row">
+            <input id="invite-uuid-input" type="text"
+                   placeholder="معرف اللاعب (UUID)"
+                   maxlength="50" autocomplete="off">
+            <button id="btn-send-invite" class="ctrl-btn primary">دعوة</button>
+          </div>
+          <div id="my-uuid-display" class="room-code-display" style="margin-top:8px;">
+            <span class="room-code-label">معرفك:</span>
+            <strong id="my-uuid-value" class="room-code-value" style="font-size:0.85rem;">---</strong>
+            <button id="btn-copy-uuid" class="ctrl-btn-sm"><span class="gh-icon gh-icon-xs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></span> نسخ</button>
+          </div>
+        </div>
+        <div id="invite-status" class="room-waiting-hint hidden"></div>
+      </div>
 
       <!-- إعداد الغرفة -->
       <div id="room-setup" class="online-room-box">
@@ -100,6 +145,7 @@
     </aside>
   </div>
 </main>
+</div>
 
 <!-- نافذة نهاية اللعبة -->
 <div id="gameover-modal" class="gameover-modal hidden">
@@ -114,11 +160,6 @@
   </div>
 </div>
 
-<!-- Chat Widget (Floating) -->
-<link rel="stylesheet" href="../../css/chat.css">
-<link rel="stylesheet" href="../../css/chat-tabs.css">
-<script src="../../js/app/gamehub-init.js"></script>
-
 <!-- نافذة عرض التعادل -->
 <div id="draw-modal" class="gameover-modal hidden">
   <div class="gameover-card">
@@ -132,11 +173,25 @@
   </div>
 </div>
 
+<!-- نافذة استقبال دعوة -->
+<div id="invite-modal" class="gameover-modal hidden">
+  <div class="gameover-card">
+    <div><span class="gh-icon gh-icon-2xl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6m-3-3h6"/></svg></span></div>
+    <h2>دعوة للعب</h2>
+    <p id="invite-msg">يريد اللعب معك</p>
+    <div class="gameover-actions">
+      <button id="btn-accept-invite" class="ctrl-btn primary"><span class="gh-icon gh-icon-sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> قبول</button>
+      <button id="btn-decline-invite" class="ctrl-btn danger"><span class="gh-icon gh-icon-sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span> رفض</button>
+    </div>
+  </div>
+</div>
+
 <script src="../../js/main.js"></script>
 <script type="module">
 import { ChessRenderer }      from './ui/renderer.js';
 import { OnlineController }   from './online/online-controller.js';
 import { gameManager }        from '../../foundation/game-manager.js';
+import { getSupabase }           from '../../foundation/supabase-config.js';
 
 // تسجيل بسيط — online لا يحتاج pause/timer/score كلاسيكي
 const foundation = gameManager.initGame({
@@ -185,11 +240,45 @@ const ctrl = new OnlineController({
             statusEl.textContent = '⚠ ' + (msg || 'خطأ في الاتصال');
             enableButtons(false);
         },
+        onInviteReceived({ inviteId, fromUserId }) {
+            currentInviteId = inviteId;
+            document.getElementById('invite-msg').textContent = `المستخدم ${fromUserId} يريد اللعب معك`;
+            document.getElementById('invite-modal').classList.remove('hidden');
+        },
+        onInviteAccepted({ code, color }) {
+            document.getElementById('invite-modal').classList.add('hidden');
+            document.getElementById('waiting-screen').classList.add('hidden');
+        },
+        onInviteDeclined(inviteId) {
+            document.getElementById('invite-status').textContent = '❌ رفض اللاعب الدعوة';
+            document.getElementById('invite-status').classList.remove('hidden');
+        },
+        onInviteExpired(inviteId) {
+            document.getElementById('invite-modal').classList.add('hidden');
+            currentInviteId = null;
+        },
     },
 });
 
 // ── الاتصال عند تحميل الصفحة ──────────────────────────────────────────────────
-ctrl.connect().then(() => {
+// Get current user UUID if authenticated
+let currentUserId = null;
+let currentInviteId = null;
+
+try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+        currentUserId = user.id;
+        // Show invite section for authenticated users
+        document.getElementById('invite-auth-required').classList.add('hidden');
+        document.getElementById('invite-form').classList.remove('hidden');
+        document.getElementById('my-uuid-value').textContent = user.id;
+    }
+} catch (e) {
+    console.log('Not authenticated - room mode only');
+}
+
+ctrl.connect(currentUserId).then(() => {
     enableButtons(true);
     document.getElementById('waiting-screen').classList.add('hidden');
 }).catch(() => {
@@ -222,6 +311,69 @@ document.getElementById('btn-join-room').addEventListener('click', async () => {
 document.getElementById('room-code-input').addEventListener('input', function() {
     if (this && this.value) this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
 });
+
+// ── نظام الدعوات عبر UUID ─────────────────────────────────────────────────────
+// Send invite
+const inviteUuidInput = document.getElementById('invite-uuid-input');
+const btnSendInvite = document.getElementById('btn-send-invite');
+if (btnSendInvite) {
+    btnSendInvite.addEventListener('click', async () => {
+        const toUserId = inviteUuidInput?.value?.trim();
+        if (!toUserId) return;
+        try {
+            document.getElementById('invite-status').textContent = '⏳ جارٍ إرسال الدعوة...';
+            document.getElementById('invite-status').classList.remove('hidden');
+            const result = await ctrl.sendInvite(toUserId);
+            if (result.ok) {
+                document.getElementById('invite-status').textContent = '✅ تم إرسال الدعوة، في انتظار الرد...';
+            }
+        } catch (err) {
+            document.getElementById('invite-status').textContent = '❌ ' + (err.message || 'فشل إرسال الدعوة');
+        }
+    });
+}
+
+// Copy UUID
+const btnCopyUuid = document.getElementById('btn-copy-uuid');
+if (btnCopyUuid) {
+    btnCopyUuid.addEventListener('click', () => {
+        const uuid = document.getElementById('my-uuid-value').textContent;
+        if (uuid && uuid !== '---') {
+            navigator.clipboard?.writeText(uuid).then(() => {
+                btnCopyUuid.innerHTML = '<span class="gh-icon gh-icon-xs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> تم';
+                setTimeout(() => {
+                    btnCopyUuid.innerHTML = '<span class="gh-icon gh-icon-xs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></span> نسخ';
+                }, 2000);
+            });
+        }
+    });
+}
+
+// Accept/Decline invite
+const btnAcceptInvite = document.getElementById('btn-accept-invite');
+const btnDeclineInvite = document.getElementById('btn-decline-invite');
+if (btnAcceptInvite) {
+    btnAcceptInvite.addEventListener('click', async () => {
+        if (currentInviteId) {
+            try {
+                await ctrl.acceptInvite(currentInviteId);
+                currentInviteId = null;
+                document.getElementById('invite-modal').classList.add('hidden');
+            } catch (err) {
+                console.error('Failed to accept invite:', err);
+            }
+        }
+    });
+}
+if (btnDeclineInvite) {
+    btnDeclineInvite.addEventListener('click', () => {
+        if (currentInviteId) {
+            ctrl.declineInvite(currentInviteId);
+            currentInviteId = null;
+            document.getElementById('invite-modal').classList.add('hidden');
+        }
+    });
+}
 
 // ── نسخ الكود ─────────────────────────────────────────────────────────────────
 document.getElementById('btn-copy-code').addEventListener('click', () => {

@@ -149,18 +149,10 @@
         }
 
         async _endGHSession(isWin) {
-            if (this._gh && this._ghSession && !this._gameOverHandled) {
-                this._gameOverHandled = true;
-                await this._gh.onGameEnd(this._ghSession, {
-                    score: isWin ? 10 : 0,
-                    isWin,
-                    difficulty: 'local'
-                });
-                if (isWin) {
-                    this._gh.achievements.updateProgress('chess', 'wins', 1);
-                }
-                this._ghSession = null;
-            }
+            // Chess achievements are ONLINE-ONLY to ensure fair competition
+            // Local mode does not count toward achievements or leaderboard
+            this._gameOverHandled = true;
+            this._ghSession = null;
         }
 
         _handleGameOver(status, winner) {

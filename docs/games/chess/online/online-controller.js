@@ -45,27 +45,37 @@ export class OnlineController {
         this._myColor   = null;   // 'w' | 'b'
         this._selected  = null;
         this._gameStarted = false;
+        this._pendingPromotion = null; // الحركة المعلقة ريثما يختار اللاعب قطعة الترقية
 
         this._client = new RoomClient(serverUrl, {
-            onConnected:    ()  => this._onConnected(),
-            onDisconnected: ()  => this._onDisconnected(),
-            onRoomState:    (s) => this._onRoomState(s),
-            onMove:         (m) => this._onOpponentMove(m),
-            onGameOver:     (d) => this._onGameOver(d),
-            onPlayerLeft:   ()  => this._onPlayerLeft(),
-            onDrawOffer:    ()  => this._cb.onDrawOffer?.(),
-            onDrawDeclined: ()  => this._setStatus('رفض الخصم عرض التعادل'),
-            onChat:         (d) => this._onChat(d),
-            onError:        (e) => this._cb.onConnectionError?.(e),
+            onConnected:     ()  => this._onConnected(),
+            onDisconnected:  ()  => this._onDisconnected(),
+            onRoomState:     (s) => this._onRoomState(s),
+            onMove:          (m) => this._onOpponentMove(m),
+            onGameOver:      (d) => this._onGameOver(d),
+            onPlayerLeft:    ()  => this._onPlayerLeft(),
+            onDrawOffer:     ()  => this._cb.onDrawOffer?.(),
+            onDrawDeclined:  ()  => this._setStatus('رفض الخصم عرض التعادل'),
+            onChat:          (d) => this._onChat(d),
+            onError:         (e) => this._cb.onConnectionError?.(e),
+            onInviteReceived:(d) => this._onInviteReceived(d),
+            onInviteAccepted:(d) => this._onInviteAccepted(d),
+            onInviteDeclined:(d) => this._onInviteDeclined(d),
         });
+
+        this._pendingInvites = new Map(); // inviteId → { fromUserId, timeout }
     }
 
     // ─── الاتصال ─────────────────────────────────────────────────────────────
 
-    async connect() {
+    async connect(userId = null) {
         this._setStatus('جارٍ الاتصال بالخادم...');
         try {
             await this._client.connect();
+            // Register user UUID if authenticated (for invite system)
+            if (userId) {
+                this._client.registerUser(userId);
+            }
         } catch (err) {
             this._setStatus('❌ فشل الاتصال — تحقق من اتصالك');
             this._cb.onConnectionError?.(err.message);
@@ -212,6 +222,7 @@ export class OnlineController {
     _handleClick(row, col) {
         if (!this._gameStarted)  return;
         if (this._anim.isRunning) return;
+        if (this._pendingPromotion) return;
         if (this._gameState.turn !== this._myColor) return;
 
         const piece = this._board.get(row, col);
@@ -247,7 +258,9 @@ export class OnlineController {
 
     async _executeMove(move) {
         if (move.flags.includes('promotion')) {
-            move = { ...move, promotion: 'q' }; // TODO: dialog ترقية
+            this._pendingPromotion = move;
+            this._showPromotionDialog(this._myColor);
+            return;
         }
 
         this._deselect();
@@ -296,6 +309,44 @@ export class OnlineController {
         }
     }
 
+    // ─── ترقية البيدق ────────────────────────────────────────────────────────
+
+    _showPromotionDialog(color) {
+        const dlg = document.getElementById('promotion-dialog');
+        if (!dlg) {
+            // Fallback: auto-queen if dialog not found
+            const move = { ...this._pendingPromotion, promotion: 'q' };
+            this._pendingPromotion = null;
+            this._executeMove(move);
+            return;
+        }
+
+        const symbols = color === 'w'
+            ? { q:'♕', r:'♖', b:'♗', n:'♘' }
+            : { q:'♛', r:'♜', b:'♝', n:'♞' };
+
+        dlg.querySelectorAll('.prom-btn').forEach(btn => {
+            const t = btn.dataset.type;
+            btn.textContent = symbols[t];
+        });
+
+        dlg.classList.remove('hidden');
+
+        // إزالة listener القديم وإضافة جديد
+        const newDlg = dlg.cloneNode(true);
+        dlg.parentNode.replaceChild(newDlg, dlg);
+
+        newDlg.addEventListener('click', (e) => {
+            const btn = e.target.closest('.prom-btn');
+            if (!btn || !this._pendingPromotion) return;
+
+            const move = { ...this._pendingPromotion, promotion: btn.dataset.type };
+            this._pendingPromotion = null;
+            newDlg.classList.add('hidden');
+            this._executeMove(move);
+        });
+    }
+
     _applyFEN(fen) {
         return parseFEN(fen);
     }
@@ -310,6 +361,64 @@ export class OnlineController {
         this._gameStarted = false;
     }
     sendChat(text) { this._client.sendChat(text); }
+
+    // ─── Invitation System ───────────────────────────────────────────────────
+
+    async sendInvite(toUserId) {
+        try {
+            const result = await this._client.sendInvite(toUserId);
+            return result;
+        } catch (err) {
+            this._setStatus('❌ ' + err.message);
+            throw err;
+        }
+    }
+
+    async acceptInvite(inviteId) {
+        try {
+            const { code, color } = await this._client.acceptInvite(inviteId);
+            this._myColor = color;
+            this._client.setColor(color);
+            this._client.setRoomCode(code);
+            // Clean up pending invite
+            const inv = this._pendingInvites.get(inviteId);
+            if (inv) { clearTimeout(inv.timeout); this._pendingInvites.delete(inviteId); }
+            this._cb.onRoomReady?.(code, color);
+            return { code, color };
+        } catch (err) {
+            this._setStatus('❌ ' + err.message);
+            throw err;
+        }
+    }
+
+    declineInvite(inviteId) {
+        this._client.declineInvite(inviteId);
+        const inv = this._pendingInvites.get(inviteId);
+        if (inv) { clearTimeout(inv.timeout); this._pendingInvites.delete(inviteId); }
+    }
+
+    _onInviteReceived({ inviteId, fromUserId, fromSocketId }) {
+        // Auto-decline after 30 seconds
+        const timeout = setTimeout(() => {
+            this.declineInvite(inviteId);
+            this._cb.onInviteExpired?.(inviteId);
+        }, 30000);
+
+        this._pendingInvites.set(inviteId, { fromUserId, fromSocketId, timeout });
+        this._cb.onInviteReceived?.({ inviteId, fromUserId });
+    }
+
+    _onInviteAccepted({ code, color, fen }) {
+        this._myColor = color;
+        this._client.setColor(color);
+        this._client.setRoomCode(code);
+        this._startGame(fen);
+        this._cb.onRoomReady?.(code, color);
+    }
+
+    _onInviteDeclined({ inviteId }) {
+        this._cb.onInviteDeclined?.(inviteId);
+    }
 
     // ─── UI ──────────────────────────────────────────────────────────────────
 

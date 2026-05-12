@@ -9,10 +9,19 @@
   "category": "strategy",
   "categoryLabel": "استراتيجية",
   "mobile": true,
+  "modes": {
+    "local": { "enabled": true, "achievements": false, "label": "لاعبان على نفس الجهاز" },
+    "ai": { "enabled": true, "achievements": false, "label": "ضد الكمبيوتر" },
+    "online": { "enabled": true, "achievements": true, "label": "أونلاين - مباريات تنافسية", "features": ["room_system", "uuid_invites", "pawn_promotion"] }
+  },
+  "achievements_policy": "online_only",
+  "leaderboard_policy": "online_only",
   "tags": [
     "استراتيجية",
     "كلاسيكية",
-    "🤖 AI"
+    "🤖 AI",
+    "🌐 أونلاين",
+    "🎯 تنافسي"
   ],
   "color": "#8b5cf6",
   "categoryIcon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"14.5 17.5 3 6 3 3 6 3 17.5 14.5\"/><line x1=\"13\" y1=\"19\" x2=\"19\" y2=\"13\"/><polyline points=\"20 16 16 20\"/><polyline points=\"7 3 14 10\"/><line x1=\"5\" y1=\"11\" x2=\"11\" y2=\"5\"/><polyline points=\"4 8 8 4\"/></svg>"

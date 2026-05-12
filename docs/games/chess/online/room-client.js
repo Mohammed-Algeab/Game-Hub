@@ -28,6 +28,7 @@ export class RoomClient {
         this._color    = null;   // 'w' | 'b'
         this._roomCode = null;
         this._connected = false;
+        this._userId   = null;   // UUID for registered users
     }
 
     // ─── الاتصال ─────────────────────────────────────────────────────────────
@@ -74,6 +75,35 @@ export class RoomClient {
         this._socket?.disconnect();
         this._socket   = null;
         this._connected = false;
+    }
+
+    // ─── User Registration (for UUID-based invites) ────────────────────────
+
+    registerUser(userId) {
+        this._userId = userId;
+        this._socket?.emit('user:register', { userId });
+    }
+
+    // ─── Invitation System ─────────────────────────────────────────────────
+
+    /** Send an invitation to a player by their UUID */
+    sendInvite(toUserId) {
+        return this._emit('invite:send', { toUserId });
+    }
+
+    /** Accept an incoming invitation */
+    acceptInvite(inviteId) {
+        return this._emit('invite:accept', { inviteId });
+    }
+
+    /** Decline an incoming invitation */
+    declineInvite(inviteId) {
+        this._socket?.emit('invite:decline', { inviteId });
+    }
+
+    /** Cancel a sent invitation */
+    cancelInvite(inviteId) {
+        this._socket?.emit('invite:cancel', { inviteId });
     }
 
     // ─── ربط الأحداث ─────────────────────────────────────────────────────────
